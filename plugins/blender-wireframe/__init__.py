@@ -1,5 +1,5 @@
 #
-#   Addon Metadata
+#   Blender Add-on Metadata
 #
 
 bl_info = {
@@ -7,20 +7,19 @@ bl_info = {
     "category": "Mesh",
 }
 
-
 #
 #   Imports
 #
 
-import addon_utils
+if "bpy" in locals():
+    import imp
+    imp.reload(generate_wireframe)
+    print("Reloaded files")
+else:
+    from . import generate_wireframe
+    print("Imported files")
+
 import bpy
-import bmesh
-import math
-import mathutils
-from collections import namedtuple
-import itertools
-import functools
-import os
 
 
 #
@@ -65,9 +64,9 @@ class WireframeGenerate(bpy.types.Operator):
             "debug": False,
         }
 
-        # generate_and_export_tile_group(config, context)
+        generate_wireframe.print_it("Connected!")
 
-        return{'FINISHED'}
+        return {'FINISHED'}
 
 
 #
@@ -92,3 +91,6 @@ def register():
 def unregister():
     bpy.utils.unregister_class(WireframeTilePanel)
     bpy.utils.unregister_class(WireframeGenerate)
+
+if __name__ == "__main__":
+    register()
