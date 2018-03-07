@@ -15,6 +15,72 @@ import bpy
 import math
 import mathutils
 
+
+#
+#   Mesh/Object Metadata Management
+#
+
+#   Create Mesh/Object Metadata
+def create_metadata(config, object):
+    if (config["debug"] == True):
+        print("create_metadata")
+
+    #   Create vertex groups if not already present
+    if ('Object' in object.vertex_groups) is False:
+        object.vertex_groups.new('Object')
+    if ('Lines' in object.vertex_groups) is False:
+        object.vertex_groups.new('Lines')
+    if ('Outline' in object.vertex_groups) is False:
+        object.vertex_groups.new('Outline')
+        
+    #   Create UV maps if not already present
+    if ('Object Texture 1 + Lines Edge XY' in object.data.uv_textures) is False:
+        object.data.uv_textures.new('Object Texture 1 + Lines Edge XY')
+    if ('Lightmap + Lines Texture' in object.data.uv_textures) is False:
+        object.data.uv_textures.new('Lightmap + Lines Texture')
+    if ('Object Texture 2 + Lines Edge Z + Lines Offset Limit' in object.data.uv_textures) is False:
+        object.data.uv_textures.new('Object Texture 2 + Lines Edge Z + Lines Offset Limit')
+        
+    #   Create vertex colors if not already present
+    if ('Col' in object.data.vertex_colors) is False:
+        object.data.vertex_colors.new('Col')
+    if ('Col_ALPHA' in object.data.vertex_colors) is False:
+        object.data.vertex_colors.new('Col_ALPHA')
+
+    #   Add custom split normals
+    bpy.ops.mesh.customdata_custom_splitnormals_add()
+
+#   Reset Mesh/Object Metadata
+def reset_metadata(config, object):
+    if (config["debug"] == True):
+        print("reset_metadata")
+
+    #   Remove vertex groups if present
+    if ('Object' in object.vertex_groups) is True:
+        object.vertex_groups.remove(object.vertex_groups['Object'])
+    if ('Lines' in object.vertex_groups) is True:
+        object.vertex_groups.remove(object.vertex_groups['Lines'])
+    if ('Outline' in object.vertex_groups) is True:
+        object.vertex_groups.remove(object.vertex_groups['Outline'])
+
+    #   Remove UV maps if present
+    if ('Object Texture 1 + Lines Edge XY' in object.data.uv_textures) is True:
+        object.data.uv_textures.remove(object.data.uv_textures['Object Texture 1 + Lines Edge XY'])
+    if ('Lightmap + Lines Texture' in object.data.uv_textures) is True:
+        object.data.uv_textures.remove(object.data.uv_textures['Lightmap + Lines Texture'])
+    if ('Object Texture 2 + Lines Edge Z + Lines Offset Limit' in object.data.uv_textures) is True:
+        object.data.uv_textures.remove(object.data.uv_textures['Object Texture 2 + Lines Edge Z + Lines Offset Limit'])
+
+    #   Remove vertex colors if present
+    if ('Col' in object.data.vertex_colors) is True:
+        object.data.vertex_colors.remove(object.data.vertex_colors['Col'])
+    if ('Col_ALPHA' in object.data.vertex_colors) is True:
+        object.data.vertex_colors.remove(object.data.vertex_colors['Col_ALPHA'])
+
+    #   Clear custom split normals
+    bpy.ops.mesh.customdata_custom_splitnormals_clear()
+
+
 #
 #   Create New Geometry
 #

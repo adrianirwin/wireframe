@@ -51,8 +51,8 @@ class WireframeTilePanel(bpy.types.Panel):
 
 class WireframeGenerate(bpy.types.Operator):
     bl_idname = "wireframe.generate"
-    bl_label = "Generate Wireframe Geometry"
-    bl_description = "Create metadata and geometry for a single mesh"
+    bl_label = "Generate Wireframe"
+    bl_description = "Create wireframe metadata and geometry for a single mesh"
  
     def execute(self, context):
 
@@ -61,10 +61,13 @@ class WireframeGenerate(bpy.types.Operator):
         #
 
         config = {
-            "debug": False,
+            "debug": True,
         }
 
-        generate_wireframe.print_it("Connected!")
+        object = context.active_object
+        if object.type == 'MESH':
+            generate_wireframe.reset_metadata(config, object)
+            generate_wireframe.create_metadata(config, object)
 
         return {'FINISHED'}
 
