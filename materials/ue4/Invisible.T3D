@@ -1,0 +1,21 @@
+Begin Object Class=/Script/Engine.Material Name="Invisible"
+   Begin Object Class=/Script/Engine.MaterialExpressionConstant Name="MaterialExpressionConstant_0"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionConstant_0"
+      MaterialExpressionEditorX=-160
+      MaterialExpressionEditorY=160
+      MaterialExpressionGuid=712920E2429BB961518944960042EE45
+      Material=Material'Invisible'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   OpacityMask=(Expression=MaterialExpressionConstant'MaterialExpressionConstant_0')
+   BlendMode=BLEND_Masked
+   bUsedWithStaticLighting=True
+   Expressions(0)=MaterialExpressionConstant'MaterialExpressionConstant_0'
+   StateId=B312AD43493FAC7E7811DBAB2258929C
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'SceneThumbnailInfoWithPrimitive_0'
+   LightingGuid=DDAAC6614A8A1034BC9FA6A1FA45146B
+End Object

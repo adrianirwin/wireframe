@@ -1,0 +1,268 @@
+Begin Object Class=/Script/Engine.Material Name="Surface_Default"
+   Begin Object Class=/Script/Engine.MaterialExpressionLinearInterpolate Name="MaterialExpressionLinearInterpolate_1"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionLinearInterpolate Name="MaterialExpressionLinearInterpolate_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMaterialFunctionCall Name="MaterialExpressionMaterialFunctionCall_10"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionScalarParameter Name="MaterialExpressionScalarParameter_38"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionScalarParameter Name="MaterialExpressionScalarParameter_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionScalarParameter Name="MaterialExpressionScalarParameter_6"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionScalarParameter Name="MaterialExpressionScalarParameter_7"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureCoordinate Name="MaterialExpressionTextureCoordinate_1"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureCoordinate Name="MaterialExpressionTextureCoordinate_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureObjectParameter Name="MaterialExpressionTextureObjectParameter_1"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureObjectParameter Name="MaterialExpressionTextureObjectParameter_3"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureObjectParameter Name="MaterialExpressionTextureObjectParameter_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureObjectParameter Name="MaterialExpressionTextureObjectParameter_6"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_1"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_3"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_6"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_1"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionVertexColor Name="MaterialExpressionVertexColor_0"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionLinearInterpolate_1"
+      A=(Expression=MaterialExpressionLinearInterpolate'Surface_Default:MaterialExpressionLinearInterpolate_2')
+      B=(Expression=MaterialExpressionTextureSample'Surface_Default:MaterialExpressionTextureSample_1',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+      Alpha=(Expression=MaterialExpressionTextureSample'Surface_Default:MaterialExpressionTextureSample_3',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+      MaterialExpressionEditorX=-128
+      MaterialExpressionEditorY=-336
+      MaterialExpressionGuid=A261A301408E82811CBB88B0E6AD6ABF
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionLinearInterpolate_2"
+      A=(Expression=MaterialExpressionVectorParameter'Surface_Default:MaterialExpressionVectorParameter_1',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+      B=(Expression=MaterialExpressionTextureSample'Surface_Default:MaterialExpressionTextureSample_5',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+      Alpha=(Expression=MaterialExpressionTextureSample'Surface_Default:MaterialExpressionTextureSample_6',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+      MaterialExpressionEditorX=-336
+      MaterialExpressionEditorY=-704
+      MaterialExpressionGuid=A261A301408E82811CBB88B0E6AD6ABF
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionMaterialFunctionCall_10"
+      MaterialFunction=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Outlined_WPO_Surface.Outlined_WPO_Surface'
+      FunctionInputs(0)=(ExpressionInputId=5CEC7F2E40B8D680D225FDB50351EE3E,Input=(Expression=MaterialExpressionScalarParameter'Surface_Default:MaterialExpressionScalarParameter_38',InputName="Thickness"))
+      FunctionInputs(1)=(ExpressionInputId=B8625572451C13D96255E3A97410261C,Input=(Expression=MaterialExpressionVertexColor'Surface_Default:MaterialExpressionVertexColor_0',OutputIndex=1,InputName="X",Mask=1,MaskR=1))
+      FunctionInputs(2)=(ExpressionInputId=1C4BBEDB43FB0535C0342E8D89F49904,Input=(Expression=MaterialExpressionVertexColor'Surface_Default:MaterialExpressionVertexColor_0',OutputIndex=2,InputName="Y",Mask=1,MaskG=1))
+      FunctionInputs(3)=(ExpressionInputId=7BF6A3E9495B2F687808F083C4CFE5FB,Input=(Expression=MaterialExpressionVertexColor'Surface_Default:MaterialExpressionVertexColor_0',OutputIndex=3,InputName="Z",Mask=1,MaskB=1))
+      FunctionOutputs(0)=(ExpressionOutputId=14D84B6E497B27370AF9B2B287ACB9EC,Output=(OutputName="Result"))
+      MaterialExpressionEditorX=-272
+      MaterialExpressionEditorY=208
+      MaterialExpressionGuid=5FFF84934E436E4BFC4EBC9AE2AC11E8
+      Material=Material'Surface_Default'
+      Outputs(0)=(OutputName="Result")
+   End Object
+   Begin Object Name="MaterialExpressionScalarParameter_38"
+      DefaultValue=1.000000
+      SliderMin=1.000000
+      SliderMax=5.000000
+      ParameterName="Thickness"
+      ExpressionGUID=FBDE67BE499CEE715B1044BB0FEFD869
+      Group="Lines"
+      MaterialExpressionEditorX=-448
+      MaterialExpressionEditorY=144
+      MaterialExpressionGuid=3AF8EB6F4A759108C9D5F996E0E6496A
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionScalarParameter_5"
+      SliderMax=1.000000
+      ParameterName="Metallic"
+      ExpressionGUID=CBF35D384D70DC4E685AF38EFBF02FC1
+      Group="Surface"
+      MaterialExpressionEditorX=-224
+      MaterialExpressionEditorY=-128
+      MaterialExpressionGuid=DEF0B406474B20DC69522B9FEB225B0C
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionScalarParameter_6"
+      SliderMax=1.000000
+      ParameterName="Specular"
+      ExpressionGUID=5358A031419B7730D5E712BF40247626
+      Group="Surface"
+      MaterialExpressionEditorX=-224
+      MaterialExpressionEditorY=-32
+      MaterialExpressionGuid=0BFA51FF47E314A163242B8FA23B89AC
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionScalarParameter_7"
+      DefaultValue=1.000000
+      SliderMax=1.000000
+      ParameterName="Roughness"
+      ExpressionGUID=86B1591047EFDCFD6019D8835FB38E30
+      Group="Surface"
+      MaterialExpressionEditorX=-224
+      MaterialExpressionEditorY=64
+      MaterialExpressionGuid=D2EEE126495ABAD2FDCF179289EA217A
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionTextureCoordinate_1"
+      MaterialExpressionEditorX=-880
+      MaterialExpressionEditorY=-336
+      MaterialExpressionGuid=828975734DBAE01BB872D69F7F55FE1D
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionTextureCoordinate_2"
+      CoordinateIndex=2
+      MaterialExpressionEditorX=-1072
+      MaterialExpressionEditorY=-736
+      MaterialExpressionGuid=828975734DBAE01BB872D69F7F55FE1D
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionTextureObjectParameter_1"
+      ParameterName="Top"
+      ExpressionGUID=170EF55B476109B0FA9767A2C1FD0F3B
+      Group="Texture"
+      Texture=Texture2D'/Game/Tile_Group_System/Textures/Blank.Blank'
+      SamplerType=SAMPLERTYPE_LinearColor
+      MaterialExpressionEditorX=-880
+      MaterialExpressionEditorY=-256
+      MaterialExpressionGuid=FE4E2A7A4C803BA72CD52F9555448CD5
+      Material=Material'Surface_Default'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionTextureObjectParameter_3"
+      ParameterName="Top Alpha"
+      ExpressionGUID=4919BE954CF0C9E87ABD7D8986847021
+      Group="Texture"
+      Texture=Texture2D'/Game/Tile_Group_System/Textures/Blank.Blank'
+      SamplerType=SAMPLERTYPE_LinearColor
+      MaterialExpressionEditorX=-880
+      MaterialExpressionEditorY=-160
+      MaterialExpressionGuid=FE4E2A7A4C803BA72CD52F9555448CD5
+      Material=Material'Surface_Default'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionTextureObjectParameter_5"
+      ParameterName="Tile"
+      ExpressionGUID=2FDD717949170E95693F6BBAE68E260E
+      Group="Texture"
+      Texture=Texture2D'/Game/Tile_Group_System/Textures/Blank.Blank'
+      SamplerType=SAMPLERTYPE_LinearColor
+      MaterialExpressionEditorX=-1072
+      MaterialExpressionEditorY=-656
+      MaterialExpressionGuid=FE4E2A7A4C803BA72CD52F9555448CD5
+      Material=Material'Surface_Default'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionTextureObjectParameter_6"
+      ParameterName="Tile Alpha"
+      ExpressionGUID=10F5D86B458B3BC2D371F1A6A7796581
+      Group="Texture"
+      Texture=Texture2D'/Game/Tile_Group_System/Textures/Blank.Blank'
+      SamplerType=SAMPLERTYPE_LinearColor
+      MaterialExpressionEditorX=-1072
+      MaterialExpressionEditorY=-560
+      MaterialExpressionGuid=FE4E2A7A4C803BA72CD52F9555448CD5
+      Material=Material'Surface_Default'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_1"
+      Coordinates=(Expression=MaterialExpressionTextureCoordinate'Surface_Default:MaterialExpressionTextureCoordinate_1')
+      TextureObject=(Expression=MaterialExpressionTextureObjectParameter'Surface_Default:MaterialExpressionTextureObjectParameter_1')
+      MaterialExpressionEditorX=-528
+      MaterialExpressionEditorY=-368
+      MaterialExpressionGuid=9EE77E4342C4B9BC7B6C0D9AB0AF3A28
+      Material=Material'Surface_Default'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_3"
+      Coordinates=(Expression=MaterialExpressionTextureCoordinate'Surface_Default:MaterialExpressionTextureCoordinate_1')
+      TextureObject=(Expression=MaterialExpressionTextureObjectParameter'Surface_Default:MaterialExpressionTextureObjectParameter_3')
+      SamplerType=SAMPLERTYPE_LinearColor
+      MaterialExpressionEditorX=-528
+      MaterialExpressionEditorY=-192
+      MaterialExpressionGuid=9EE77E4342C4B9BC7B6C0D9AB0AF3A28
+      Material=Material'Surface_Default'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_5"
+      Coordinates=(Expression=MaterialExpressionTextureCoordinate'Surface_Default:MaterialExpressionTextureCoordinate_2')
+      TextureObject=(Expression=MaterialExpressionTextureObjectParameter'Surface_Default:MaterialExpressionTextureObjectParameter_5')
+      MaterialExpressionEditorX=-720
+      MaterialExpressionEditorY=-768
+      MaterialExpressionGuid=9EE77E4342C4B9BC7B6C0D9AB0AF3A28
+      Material=Material'Surface_Default'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_6"
+      Coordinates=(Expression=MaterialExpressionTextureCoordinate'Surface_Default:MaterialExpressionTextureCoordinate_2')
+      TextureObject=(Expression=MaterialExpressionTextureObjectParameter'Surface_Default:MaterialExpressionTextureObjectParameter_6')
+      SamplerType=SAMPLERTYPE_LinearColor
+      MaterialExpressionEditorX=-720
+      MaterialExpressionEditorY=-592
+      MaterialExpressionGuid=9EE77E4342C4B9BC7B6C0D9AB0AF3A28
+      Material=Material'Surface_Default'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_1"
+      ParameterName="Colour"
+      ExpressionGUID=81DE286241E7145FDA8B109F64FBE430
+      Group="Surface"
+      MaterialExpressionEditorX=-720
+      MaterialExpressionEditorY=-976
+      MaterialExpressionGuid=900165F740A415996A23A89FB9583999
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="MaterialExpressionVertexColor_0"
+      MaterialExpressionEditorX=-448
+      MaterialExpressionEditorY=256
+      MaterialExpressionGuid=BB80C9FA4C194D85A99DA9844DF18085
+      Material=Material'Surface_Default'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Expression=MaterialExpressionLinearInterpolate'MaterialExpressionLinearInterpolate_1')
+   Metallic=(Expression=MaterialExpressionScalarParameter'MaterialExpressionScalarParameter_5')
+   Specular=(Expression=MaterialExpressionScalarParameter'MaterialExpressionScalarParameter_6')
+   Roughness=(Expression=MaterialExpressionScalarParameter'MaterialExpressionScalarParameter_7')
+   WorldPositionOffset=(Expression=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_10')
+   bUsedWithStaticLighting=True
+   EditorX=128
+   Expressions(0)=MaterialExpressionLinearInterpolate'MaterialExpressionLinearInterpolate_1'
+   Expressions(1)=MaterialExpressionScalarParameter'MaterialExpressionScalarParameter_5'
+   Expressions(2)=MaterialExpressionScalarParameter'MaterialExpressionScalarParameter_6'
+   Expressions(3)=MaterialExpressionScalarParameter'MaterialExpressionScalarParameter_7'
+   Expressions(4)=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_10'
+   Expressions(5)=MaterialExpressionLinearInterpolate'MaterialExpressionLinearInterpolate_2'
+   Expressions(6)=MaterialExpressionVectorParameter'MaterialExpressionVectorParameter_1'
+   Expressions(7)=MaterialExpressionVertexColor'MaterialExpressionVertexColor_0'
+   Expressions(8)=MaterialExpressionTextureCoordinate'MaterialExpressionTextureCoordinate_1'
+   Expressions(9)=MaterialExpressionTextureSample'MaterialExpressionTextureSample_1'
+   Expressions(10)=MaterialExpressionTextureObjectParameter'MaterialExpressionTextureObjectParameter_1'
+   Expressions(11)=MaterialExpressionTextureObjectParameter'MaterialExpressionTextureObjectParameter_5'
+   Expressions(12)=MaterialExpressionTextureSample'MaterialExpressionTextureSample_5'
+   Expressions(13)=MaterialExpressionTextureCoordinate'MaterialExpressionTextureCoordinate_2'
+   Expressions(14)=MaterialExpressionScalarParameter'MaterialExpressionScalarParameter_38'
+   Expressions(15)=MaterialExpressionTextureSample'MaterialExpressionTextureSample_3'
+   Expressions(16)=MaterialExpressionTextureObjectParameter'MaterialExpressionTextureObjectParameter_3'
+   Expressions(17)=MaterialExpressionTextureSample'MaterialExpressionTextureSample_6'
+   Expressions(18)=MaterialExpressionTextureObjectParameter'MaterialExpressionTextureObjectParameter_6'
+   MaterialFunctionInfos(0)=(StateId=96C6E2314BF205F966B444B0C75AF2FC,Function=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Outlined_WPO_Surface.Outlined_WPO_Surface')
+   MaterialFunctionInfos(1)=(StateId=E6A854604E707DD6EBF457B4A3E80A43,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions02/Utility/MakeFloat3.MakeFloat3')
+   MaterialFunctionInfos(2)=(StateId=C6E533F04A39AB83AEC46DA66FD1180E,Function=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/VertexColour_To_WS_Vector.VertexColour_To_WS_Vector')
+   MaterialFunctionInfos(3)=(StateId=99C74E0B4AA822665B2AA6991F2FEE8E,Function=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Screen_Position_Scale.Screen_Position_Scale')
+   MaterialFunctionInfos(4)=(StateId=3F1AF799449F40420D9FE2A58A6E6C30,Function=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Pixel_Size.Pixel_Size')
+   bCanMaskedBeAssumedOpaque=True
+   StateId=0D7D5A9144E73DDEF6CF4DADBA83F5B2
+   ReferencedTextureGuids(0)=C24B31014B09C7B4082D979B1B289A56
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'SceneThumbnailInfoWithPrimitive_0'
+   LightingGuid=DA121EFD409D676046DE0FA17EA1A89F
+End Object

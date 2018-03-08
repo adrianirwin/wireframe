@@ -1,0 +1,121 @@
+Begin Object Class=/Script/Engine.Material Name="Lines_Default"
+   Begin Object Class=/Script/Engine.MaterialExpressionMaterialFunctionCall Name="MaterialExpressionMaterialFunctionCall_39"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionScalarParameter Name="MaterialExpressionScalarParameter_36"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureCoordinate Name="MaterialExpressionTextureCoordinate_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureCoordinate Name="MaterialExpressionTextureCoordinate_8"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureCoordinate Name="MaterialExpressionTextureCoordinate_9"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_1"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionVertexColor Name="MaterialExpressionVertexColor_8"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionMaterialFunctionCall_39"
+      MaterialFunction=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Outlined_WPO_Lines.Outlined_WPO_Lines'
+      FunctionInputs(0)=(ExpressionInputId=66341C314293EAE64B601FBDC7197783,Input=(Expression=MaterialExpressionScalarParameter'Lines_Default:MaterialExpressionScalarParameter_36',InputName="Thickness"))
+      FunctionInputs(1)=(ExpressionInputId=06D7572846DB0E554B8AE59755E16466,Input=(Expression=MaterialExpressionVertexColor'Lines_Default:MaterialExpressionVertexColor_8',OutputIndex=1,InputName="X",Mask=1,MaskR=1))
+      FunctionInputs(2)=(ExpressionInputId=B2EFC8B943633B6B98F92586CEFEEE79,Input=(Expression=MaterialExpressionVertexColor'Lines_Default:MaterialExpressionVertexColor_8',OutputIndex=2,InputName="Y",Mask=1,MaskG=1))
+      FunctionInputs(3)=(ExpressionInputId=E4A5346A4C4C922C837548AE2F9ECCE6,Input=(Expression=MaterialExpressionVertexColor'Lines_Default:MaterialExpressionVertexColor_8',OutputIndex=3,InputName="Z",Mask=1,MaskB=1))
+      FunctionInputs(4)=(ExpressionInputId=BDC673354C5C7FF740F3FFB613A24570,Input=(Expression=MaterialExpressionVertexColor'Lines_Default:MaterialExpressionVertexColor_8',OutputIndex=4,InputName="M",Mask=1,MaskA=1))
+      FunctionInputs(5)=(ExpressionInputId=B9DC66614AE875F4FC6285A27D03363A,Input=(Expression=MaterialExpressionTextureCoordinate'Lines_Default:MaterialExpressionTextureCoordinate_5',InputName="Lines Mask UV"))
+      FunctionInputs(6)=(ExpressionInputId=F353506F4254D64C977D189E290D6278,Input=(Expression=MaterialExpressionTextureCoordinate'Lines_Default:MaterialExpressionTextureCoordinate_8',InputName="Line Border XY"))
+      FunctionInputs(7)=(ExpressionInputId=D1BE3D5245D7D264063D6FA462EE2CD6,Input=(Expression=MaterialExpressionTextureCoordinate'Lines_Default:MaterialExpressionTextureCoordinate_9',InputName="Line Border Z & Limit"))
+      FunctionOutputs(0)=(ExpressionOutputId=3F8FEB67499E587F89FD6090E21B47E7,Output=(OutputName="Opacity Mask"))
+      FunctionOutputs(1)=(ExpressionOutputId=AE001037423B4128DDD42FAFFEB45B2D,Output=(OutputName="World Position Offset"))
+      MaterialExpressionEditorX=320
+      MaterialExpressionEditorY=-1808
+      MaterialExpressionGuid=393EC31E498DBB7FEFA3B0A50000E70A
+      Material=Material'Lines_Default'
+      Outputs(0)=(OutputName="Opacity Mask")
+      Outputs(1)=(OutputName="World Position Offset")
+   End Object
+   Begin Object Name="MaterialExpressionScalarParameter_36"
+      DefaultValue=1.000000
+      SliderMin=1.000000
+      SliderMax=5.000000
+      ParameterName="Thickness"
+      ExpressionGUID=64EF64444A23C0719C8028BF022B8707
+      Group="Lines"
+      MaterialExpressionEditorX=80
+      MaterialExpressionEditorY=-1920
+      MaterialExpressionGuid=55AEB7764DF541C92234E38FD7701929
+      Material=Material'Lines_Default'
+   End Object
+   Begin Object Name="MaterialExpressionTextureCoordinate_5"
+      CoordinateIndex=1
+      MaterialExpressionEditorX=80
+      MaterialExpressionEditorY=-1632
+      MaterialExpressionGuid=EADCE1F3473293EE205E71A923F6F1DD
+      Material=Material'Lines_Default'
+   End Object
+   Begin Object Name="MaterialExpressionTextureCoordinate_8"
+      MaterialExpressionEditorX=80
+      MaterialExpressionEditorY=-1552
+      MaterialExpressionGuid=EADCE1F3473293EE205E71A923F6F1DD
+      Material=Material'Lines_Default'
+   End Object
+   Begin Object Name="MaterialExpressionTextureCoordinate_9"
+      CoordinateIndex=2
+      MaterialExpressionEditorX=80
+      MaterialExpressionEditorY=-1472
+      MaterialExpressionGuid=EADCE1F3473293EE205E71A923F6F1DD
+      Material=Material'Lines_Default'
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_1"
+      DefaultValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000)
+      ParameterName="Colour"
+      ExpressionGUID=81DE286241E7145FDA8B109F64FBE430
+      Group="Lines"
+      MaterialExpressionEditorX=400
+      MaterialExpressionEditorY=-2144
+      MaterialExpressionGuid=900165F740A415996A23A89FB9583999
+      Material=Material'Lines_Default'
+   End Object
+   Begin Object Name="MaterialExpressionVertexColor_8"
+      MaterialExpressionEditorX=80
+      MaterialExpressionEditorY=-1824
+      MaterialExpressionGuid=BB80C9FA4C194D85A99DA9844DF18085
+      Material=Material'Lines_Default'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   EmissiveColor=(Expression=MaterialExpressionVectorParameter'MaterialExpressionVectorParameter_1',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Opacity=(Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   OpacityMask=(Expression=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_39')
+   BlendMode=BLEND_Masked
+   ShadingModel=MSM_Unlit
+   WorldPositionOffset=(Expression=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_39',OutputIndex=1)
+   bUsedWithStaticLighting=True
+   EditorX=768
+   EditorY=-2048
+   Expressions(0)=MaterialExpressionVectorParameter'MaterialExpressionVectorParameter_1'
+   Expressions(1)=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_39'
+   Expressions(2)=MaterialExpressionVertexColor'MaterialExpressionVertexColor_8'
+   Expressions(3)=MaterialExpressionScalarParameter'MaterialExpressionScalarParameter_36'
+   Expressions(4)=MaterialExpressionTextureCoordinate'MaterialExpressionTextureCoordinate_5'
+   Expressions(5)=MaterialExpressionTextureCoordinate'MaterialExpressionTextureCoordinate_8'
+   Expressions(6)=MaterialExpressionTextureCoordinate'MaterialExpressionTextureCoordinate_9'
+   ParameterGroupData(0)=(GroupName="Lines")
+   MaterialFunctionInfos(0)=(StateId=F7120FAD41007A7663C53EA646499256,Function=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Outlined_WPO_Lines.Outlined_WPO_Lines')
+   MaterialFunctionInfos(1)=(StateId=50EBF8C64FF5F3EFE9520A92C416A78F,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions02/Utility/CameraDirectionVector.CameraDirectionVector')
+   MaterialFunctionInfos(2)=(StateId=C9BCF9F545BDB48039A59EB6B8A33FAE,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions01/Vectors/RotateVector.RotateVector')
+   MaterialFunctionInfos(3)=(StateId=3F1AF799449F40420D9FE2A58A6E6C30,Function=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Pixel_Size.Pixel_Size')
+   MaterialFunctionInfos(4)=(StateId=99C74E0B4AA822665B2AA6991F2FEE8E,Function=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Screen_Position_Scale.Screen_Position_Scale')
+   MaterialFunctionInfos(5)=(StateId=E6A854604E707DD6EBF457B4A3E80A43,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions02/Utility/MakeFloat3.MakeFloat3')
+   MaterialFunctionInfos(6)=(StateId=C6E533F04A39AB83AEC46DA66FD1180E,Function=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/VertexColour_To_WS_Vector.VertexColour_To_WS_Vector')
+   MaterialFunctionInfos(7)=(StateId=162D6D2B48CD8C456AA56F8E93FB317B,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions02/Utility/VectorLength.VectorLength')
+   MaterialFunctionInfos(8)=(StateId=2C1DDB6E406BC9FC1D4141A17C82122A,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions02/Utility/BreakOutFloat2Components.BreakOutFloat2Components')
+   MaterialFunctionInfos(9)=(StateId=E47E7D6B466F913CC1497584EDB1DBD6,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions01/Texturing/ComputeMipLevel.ComputeMipLevel')
+   MaterialFunctionInfos(10)=(StateId=A9CC16D54B37524336F3CF863EF27E55,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions01/Texturing/TextureCropping.TextureCropping')
+   MaterialFunctionInfos(11)=(StateId=090EFC3145B6B4454A88D5939A8EC8E7,Function=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions02/Utility/DebugScalarValues.DebugScalarValues')
+   StateId=B947D0944519AD156CD43CA8692DB3C3
+   ReferencedTextureGuids(0)=F883D87548C3A0FC00BDC684CDE40706
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'SceneThumbnailInfoWithPrimitive_0'
+   LightingGuid=B40D71B74E9977FE22DA4EBB2ED25284
+End Object

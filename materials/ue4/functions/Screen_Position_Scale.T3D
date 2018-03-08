@@ -1,0 +1,197 @@
+Begin Object Class=/Script/Engine.MaterialFunction Name="Screen_Position_Scale"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionSubtract Name="MaterialExpressionSubtract_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionScreenPosition Name="MaterialExpressionScreenPosition_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_13"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_12"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_11"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_10"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMax Name="MaterialExpressionMax_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionOutput Name="MaterialExpressionFunctionOutput_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_3"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionConstant Name="MaterialExpressionConstant_6"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionConstant Name="MaterialExpressionConstant_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionComponentMask Name="MaterialExpressionComponentMask_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionComponentMask Name="MaterialExpressionComponentMask_4"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionAdd Name="MaterialExpressionAdd_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionAdd Name="MaterialExpressionAdd_4"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionAbs Name="MaterialExpressionAbs_3"
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionSubtract_2"
+      A=(Expression=MaterialExpressionMultiply'Screen_Position_Scale:MaterialExpressionMultiply_10')
+      MaterialExpressionEditorX=-928
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=BA8599C34067F821C1262D8539D279E8
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionScreenPosition_2"
+      Mapping=MESP_ViewportUV
+      MaterialExpressionEditorX=-1280
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=D90222114A98F121148D8C9800907FA2
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_13"
+      A=(Expression=MaterialExpressionComponentMask'Screen_Position_Scale:MaterialExpressionComponentMask_5')
+      B=(Expression=MaterialExpressionFunctionInput'Screen_Position_Scale:MaterialExpressionFunctionInput_2')
+      MaterialExpressionEditorX=-240
+      MaterialExpressionEditorY=432
+      MaterialExpressionGuid=8B1C945242299C655B4FC6AAB020BF13
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_12"
+      A=(Expression=MaterialExpressionAbs'Screen_Position_Scale:MaterialExpressionAbs_3')
+      ConstB=0.500000
+      MaterialExpressionEditorX=-656
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=6ADD3C424055084E3B298F89B7404F71
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_11"
+      A=(Expression=MaterialExpressionComponentMask'Screen_Position_Scale:MaterialExpressionComponentMask_4')
+      B=(Expression=MaterialExpressionFunctionInput'Screen_Position_Scale:MaterialExpressionFunctionInput_3')
+      MaterialExpressionEditorX=-240
+      MaterialExpressionEditorY=320
+      MaterialExpressionGuid=8B1C945242299C655B4FC6AAB020BF13
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_10"
+      A=(Expression=MaterialExpressionScreenPosition'Screen_Position_Scale:MaterialExpressionScreenPosition_2')
+      ConstB=2.000000
+      MaterialExpressionEditorX=-1088
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=951484984F9BE7700DE76B9B3B63B7D8
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionMax_2"
+      A=(Expression=MaterialExpressionAdd'Screen_Position_Scale:MaterialExpressionAdd_4')
+      B=(Expression=MaterialExpressionConstant'Screen_Position_Scale:MaterialExpressionConstant_6')
+      MaterialExpressionEditorX=240
+      MaterialExpressionEditorY=352
+      MaterialExpressionGuid=4A8A042B43F50CE9D1C9B1B4FDE17FCE
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionFunctionOutput_0"
+      A=(Expression=MaterialExpressionMax'Screen_Position_Scale:MaterialExpressionMax_2')
+      bLastPreviewed=True
+      Id=2623F73047527C8CD10536A36FBE659C
+      MaterialExpressionEditorX=400
+      MaterialExpressionEditorY=320
+      MaterialExpressionGuid=AFAC229F4D85403429294D9DF043694E
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_3"
+      InputName="X"
+      Id=8716B5AF430FAEEE867479AC7F2B20D6
+      InputType=FunctionInput_Scalar
+      MaterialExpressionEditorX=-496
+      MaterialExpressionEditorY=208
+      MaterialExpressionGuid=9CF3F03042A5BD904695B1859CEB1708
+      Function=MaterialFunction'Screen_Position_Scale'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_2"
+      InputName="Y"
+      Id=C5FF542C408E43D23AC6B1B5FDC4818B
+      InputType=FunctionInput_Scalar
+      SortPriority=1
+      MaterialExpressionEditorX=-496
+      MaterialExpressionEditorY=544
+      MaterialExpressionGuid=9CF3F03042A5BD904695B1859CEB1708
+      Function=MaterialFunction'Screen_Position_Scale'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionConstant_6"
+      MaterialExpressionEditorX=128
+      MaterialExpressionEditorY=464
+      MaterialExpressionGuid=EF263144414B494A6F6FA3BA337853CB
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionConstant_5"
+      R=1.000000
+      MaterialExpressionEditorX=-32
+      MaterialExpressionEditorY=464
+      MaterialExpressionGuid=EF263144414B494A6F6FA3BA337853CB
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionComponentMask_5"
+      Input=(Expression=MaterialExpressionMultiply'Screen_Position_Scale:MaterialExpressionMultiply_12')
+      G=True
+      MaterialExpressionEditorX=-464
+      MaterialExpressionEditorY=432
+      MaterialExpressionGuid=8923B9C24C09D27557764581AA6431A8
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionComponentMask_4"
+      Input=(Expression=MaterialExpressionMultiply'Screen_Position_Scale:MaterialExpressionMultiply_12')
+      R=True
+      MaterialExpressionEditorX=-464
+      MaterialExpressionEditorY=320
+      MaterialExpressionGuid=8923B9C24C09D27557764581AA6431A8
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionAdd_5"
+      A=(Expression=MaterialExpressionMultiply'Screen_Position_Scale:MaterialExpressionMultiply_11')
+      B=(Expression=MaterialExpressionMultiply'Screen_Position_Scale:MaterialExpressionMultiply_13')
+      MaterialExpressionEditorX=-80
+      MaterialExpressionEditorY=352
+      MaterialExpressionGuid=936389394B46CA47493265AEE95F73A1
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionAdd_4"
+      A=(Expression=MaterialExpressionAdd'Screen_Position_Scale:MaterialExpressionAdd_5')
+      B=(Expression=MaterialExpressionConstant'Screen_Position_Scale:MaterialExpressionConstant_5')
+      MaterialExpressionEditorX=80
+      MaterialExpressionEditorY=352
+      MaterialExpressionGuid=936389394B46CA47493265AEE95F73A1
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   Begin Object Name="MaterialExpressionAbs_3"
+      Input=(Expression=MaterialExpressionSubtract'Screen_Position_Scale:MaterialExpressionSubtract_2')
+      MaterialExpressionEditorX=-768
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=394AA8D74F1B47FAB4704E91FF695D72
+      Function=MaterialFunction'Screen_Position_Scale'
+   End Object
+   StateId=99C74E0B4AA822665B2AA6991F2FEE8E
+   FunctionExpressions(0)=MaterialExpressionFunctionOutput'MaterialExpressionFunctionOutput_0'
+   FunctionExpressions(1)=MaterialExpressionAdd'MaterialExpressionAdd_5'
+   FunctionExpressions(2)=MaterialExpressionMultiply'MaterialExpressionMultiply_13'
+   FunctionExpressions(3)=MaterialExpressionConstant'MaterialExpressionConstant_6'
+   FunctionExpressions(4)=MaterialExpressionMax'MaterialExpressionMax_2'
+   FunctionExpressions(5)=MaterialExpressionConstant'MaterialExpressionConstant_5'
+   FunctionExpressions(6)=MaterialExpressionAdd'MaterialExpressionAdd_4'
+   FunctionExpressions(7)=MaterialExpressionMultiply'MaterialExpressionMultiply_12'
+   FunctionExpressions(8)=MaterialExpressionMultiply'MaterialExpressionMultiply_11'
+   FunctionExpressions(9)=MaterialExpressionComponentMask'MaterialExpressionComponentMask_5'
+   FunctionExpressions(10)=MaterialExpressionComponentMask'MaterialExpressionComponentMask_4'
+   FunctionExpressions(11)=MaterialExpressionAbs'MaterialExpressionAbs_3'
+   FunctionExpressions(12)=MaterialExpressionMultiply'MaterialExpressionMultiply_10'
+   FunctionExpressions(13)=MaterialExpressionSubtract'MaterialExpressionSubtract_2'
+   FunctionExpressions(14)=MaterialExpressionScreenPosition'MaterialExpressionScreenPosition_2'
+   FunctionExpressions(15)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_2'
+   FunctionExpressions(16)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_3'
+   CombinedInputTypes=15
+   CombinedOutputTypes=15
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'SceneThumbnailInfoWithPrimitive_0'
+End Object

@@ -1,0 +1,153 @@
+Begin Object Class=/Script/Engine.MaterialFunction Name="VertexColour_To_WS_Vector"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_1"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTransform Name="MaterialExpressionTransform_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionSubtract Name="MaterialExpressionSubtract_6"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionOneMinus Name="MaterialExpressionOneMinus_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_7"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMaterialFunctionCall Name="MaterialExpressionMaterialFunctionCall_14"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionOutput Name="MaterialExpressionFunctionOutput_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_9"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_8"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_7"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_10"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionDivide Name="MaterialExpressionDivide_2"
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_1"
+   End Object
+   Begin Object Name="MaterialExpressionTransform_2"
+      Input=(Expression=MaterialExpressionMultiply'VertexColour_To_WS_Vector:MaterialExpressionMultiply_7')
+      TransformSourceType=TRANSFORMSOURCE_Local
+      MaterialExpressionEditorX=784
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=52353351439E61E7B6B84C9454D46CF0
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+   End Object
+   Begin Object Name="MaterialExpressionSubtract_6"
+      A=(Expression=MaterialExpressionMaterialFunctionCall'VertexColour_To_WS_Vector:MaterialExpressionMaterialFunctionCall_14')
+      ConstB=0.500000
+      MaterialExpressionEditorX=464
+      MaterialExpressionEditorY=272
+      MaterialExpressionGuid=31A29E974B7B640976CA2CB0C755C876
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+   End Object
+   Begin Object Name="MaterialExpressionOneMinus_2"
+      Input=(Expression=MaterialExpressionFunctionInput'VertexColour_To_WS_Vector:MaterialExpressionFunctionInput_8')
+      MaterialExpressionEditorX=176
+      MaterialExpressionEditorY=256
+      MaterialExpressionGuid=EC08822542A2B060186CC590459E6481
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_7"
+      A=(Expression=MaterialExpressionSubtract'VertexColour_To_WS_Vector:MaterialExpressionSubtract_6')
+      B=(Expression=MaterialExpressionDivide'VertexColour_To_WS_Vector:MaterialExpressionDivide_2')
+      ConstB=2.000000
+      MaterialExpressionEditorX=640
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=F24B403541E5E221FE7F929AD5A66173
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+   End Object
+   Begin Object Name="MaterialExpressionMaterialFunctionCall_14"
+      MaterialFunction=MaterialFunction'/Engine/Functions/Engine_MaterialFunctions02/Utility/MakeFloat3.MakeFloat3'
+      FunctionInputs(0)=(ExpressionInputId=529C1D96441E07EB03A9E59B8A7F67B6,Input=(Expression=MaterialExpressionFunctionInput'VertexColour_To_WS_Vector:MaterialExpressionFunctionInput_7',InputName="X"))
+      FunctionInputs(1)=(ExpressionInputId=B5BD7D1B494F6928732CCDA1C63D8E15,Input=(Expression=MaterialExpressionOneMinus'VertexColour_To_WS_Vector:MaterialExpressionOneMinus_2',InputName="Y"))
+      FunctionInputs(2)=(ExpressionInputId=050F17B8471570B47A802CB7CAA5A201,Input=(Expression=MaterialExpressionFunctionInput'VertexColour_To_WS_Vector:MaterialExpressionFunctionInput_9',InputName="Z"))
+      FunctionOutputs(0)=(ExpressionOutputId=0DD6F9954C067C3E5DDBBBA0D6910DD2,Output=(OutputName="Result"))
+      MaterialExpressionEditorX=304
+      MaterialExpressionEditorY=304
+      MaterialExpressionGuid=A26A38524066D8CEE9F86EA08603184E
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+      Outputs(0)=(OutputName="Result")
+   End Object
+   Begin Object Name="MaterialExpressionFunctionOutput_0"
+      A=(Expression=MaterialExpressionTransform'VertexColour_To_WS_Vector:MaterialExpressionTransform_2')
+      bLastPreviewed=True
+      Id=2E3418534197C0A2C57653AFD86B023A
+      MaterialExpressionEditorX=1040
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=EF4BC68C469E13361658AEB7BBF0FFEC
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_9"
+      InputName="Z (B)"
+      Id=6EB8B5EC489B2113A812FF85953F3ED0
+      InputType=FunctionInput_Scalar
+      PreviewValue=(X=0.000000,Y=0.000000,Z=1.000000,W=0.000000)
+      SortPriority=2
+      MaterialExpressionEditorX=-96
+      MaterialExpressionEditorY=416
+      MaterialExpressionGuid=4543D60C4E1FD04F19159EBFFFEF6837
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_8"
+      InputName="Y (G)"
+      Id=9DBA23E140EC294879D7D3AB9FFE28E0
+      InputType=FunctionInput_Scalar
+      PreviewValue=(X=0.000000,Y=1.000000,Z=0.000000,W=0.000000)
+      SortPriority=1
+      MaterialExpressionEditorX=-96
+      MaterialExpressionEditorY=352
+      MaterialExpressionGuid=4543D60C4E1FD04F19159EBFFFEF6837
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_7"
+      InputName="X (R)"
+      Id=08D205554A23104DF9287490CD3BFA14
+      InputType=FunctionInput_Scalar
+      PreviewValue=(X=1.000000,Y=0.000000,Z=0.000000,W=0.000000)
+      MaterialExpressionEditorX=-96
+      MaterialExpressionEditorY=288
+      MaterialExpressionGuid=4543D60C4E1FD04F19159EBFFFEF6837
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_10"
+      InputName="M (A)"
+      Id=65016FB647BD79C28F9986995D4B82A5
+      InputType=FunctionInput_Scalar
+      SortPriority=3
+      MaterialExpressionEditorX=-96
+      MaterialExpressionEditorY=480
+      MaterialExpressionGuid=4543D60C4E1FD04F19159EBFFFEF6837
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionDivide_2"
+      A=(OutputIndex=4,Mask=1,MaskA=1)
+      B=(Expression=MaterialExpressionFunctionInput'VertexColour_To_WS_Vector:MaterialExpressionFunctionInput_10')
+      ConstA=2.000000
+      MaterialExpressionEditorX=304
+      MaterialExpressionEditorY=448
+      MaterialExpressionGuid=9E5DB06944915AD1EE5B9685428C63FC
+      Function=MaterialFunction'VertexColour_To_WS_Vector'
+   End Object
+   StateId=C6E533F04A39AB83AEC46DA66FD1180E
+   bExposeToLibrary=True
+   FunctionExpressions(0)=MaterialExpressionFunctionOutput'MaterialExpressionFunctionOutput_0'
+   FunctionExpressions(1)=MaterialExpressionTransform'MaterialExpressionTransform_2'
+   FunctionExpressions(2)=MaterialExpressionMultiply'MaterialExpressionMultiply_7'
+   FunctionExpressions(3)=MaterialExpressionDivide'MaterialExpressionDivide_2'
+   FunctionExpressions(4)=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_14'
+   FunctionExpressions(5)=MaterialExpressionOneMinus'MaterialExpressionOneMinus_2'
+   FunctionExpressions(6)=MaterialExpressionSubtract'MaterialExpressionSubtract_6'
+   FunctionExpressions(7)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_7'
+   FunctionExpressions(8)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_8'
+   FunctionExpressions(9)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_10'
+   FunctionExpressions(10)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_9'
+   CombinedInputTypes=15
+   CombinedOutputTypes=15
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'SceneThumbnailInfoWithPrimitive_1'
+End Object

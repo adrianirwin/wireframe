@@ -1,0 +1,280 @@
+Begin Object Class=/Script/Engine.MaterialFunction Name="Outlined_WPO_Surface"
+   Begin Object Class=/Script/Engine.MaterialExpressionCameraPositionWS Name="MaterialExpressionCameraPositionWS_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionConstant Name="MaterialExpressionConstant_10"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionConstant Name="MaterialExpressionConstant_12"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionConstant Name="MaterialExpressionConstant_13"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionConstant Name="MaterialExpressionConstant_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionConstant Name="MaterialExpressionConstant_9"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionDistance Name="MaterialExpressionDistance_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_6"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionInput Name="MaterialExpressionFunctionInput_7"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionOutput Name="MaterialExpressionFunctionOutput_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMaterialFunctionCall Name="MaterialExpressionMaterialFunctionCall_6"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMaterialFunctionCall Name="MaterialExpressionMaterialFunctionCall_7"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMaterialFunctionCall Name="MaterialExpressionMaterialFunctionCall_8"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMax Name="MaterialExpressionMax_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_10"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_11"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_7"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_8"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionMultiply Name="MaterialExpressionMultiply_9"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionPower Name="MaterialExpressionPower_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionWorldPosition Name="MaterialExpressionWorldPosition_2"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionCameraPositionWS_2"
+      MaterialExpressionEditorX=-1376
+      MaterialExpressionEditorY=416
+      MaterialExpressionGuid=D9431027455E7FD5DEA31FA3F17CF256
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionConstant_10"
+      R=-0.500000
+      MaterialExpressionEditorX=-448
+      MaterialExpressionEditorY=768
+      MaterialExpressionGuid=6C4865E34DDEFA76E4653397A0274BA0
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionConstant_12"
+      R=0.100000
+      MaterialExpressionEditorX=-672
+      MaterialExpressionEditorY=432
+      MaterialExpressionGuid=ED2572A849400971330BA98D62FECE47
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionConstant_13"
+      R=0.975000
+      MaterialExpressionEditorX=-1152
+      MaterialExpressionEditorY=480
+      MaterialExpressionGuid=F9DA4AD445BFFD8C299302835EA51580
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionConstant_2"
+      R=1.000000
+      MaterialExpressionEditorX=-1104
+      MaterialExpressionEditorY=224
+      MaterialExpressionGuid=806F86C945439DB3E38C06BCEFD3C7B0
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionConstant_9"
+      R=-1.000000
+      MaterialExpressionEditorX=-432
+      MaterialExpressionEditorY=640
+      MaterialExpressionGuid=6C4865E34DDEFA76E4653397A0274BA0
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionDistance_2"
+      A=(Expression=MaterialExpressionWorldPosition'Outlined_WPO_Surface:MaterialExpressionWorldPosition_2')
+      B=(Expression=MaterialExpressionCameraPositionWS'Outlined_WPO_Surface:MaterialExpressionCameraPositionWS_2')
+      MaterialExpressionEditorX=-1168
+      MaterialExpressionEditorY=352
+      MaterialExpressionGuid=8841D2874F6BF1035B8D30880CB54F96
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_2"
+      InputName="X"
+      Id=B8625572451C13D96255E3A97410261C
+      InputType=FunctionInput_Scalar
+      SortPriority=1
+      MaterialExpressionEditorX=-1184
+      MaterialExpressionEditorY=-16
+      MaterialExpressionGuid=BA99AA8F49E4D5E121BA238FD1CC027E
+      Function=MaterialFunction'Outlined_WPO_Surface'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_5"
+      InputName="Y"
+      Id=1C4BBEDB43FB0535C0342E8D89F49904
+      InputType=FunctionInput_Scalar
+      SortPriority=2
+      MaterialExpressionEditorX=-1184
+      MaterialExpressionEditorY=64
+      MaterialExpressionGuid=BA99AA8F49E4D5E121BA238FD1CC027E
+      Function=MaterialFunction'Outlined_WPO_Surface'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_6"
+      InputName="Z"
+      Id=7BF6A3E9495B2F687808F083C4CFE5FB
+      InputType=FunctionInput_Scalar
+      SortPriority=3
+      MaterialExpressionEditorX=-1184
+      MaterialExpressionEditorY=144
+      MaterialExpressionGuid=BA99AA8F49E4D5E121BA238FD1CC027E
+      Function=MaterialFunction'Outlined_WPO_Surface'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionInput_7"
+      InputName="Thickness"
+      Id=5CEC7F2E40B8D680D225FDB50351EE3E
+      InputType=FunctionInput_Scalar
+      MaterialExpressionEditorX=-48
+      MaterialExpressionEditorY=480
+      MaterialExpressionGuid=F0505A1C4D145412D4D49A9B0092189C
+      Function=MaterialFunction'Outlined_WPO_Surface'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionFunctionOutput_0"
+      A=(Expression=MaterialExpressionMultiply'Outlined_WPO_Surface:MaterialExpressionMultiply_8')
+      bLastPreviewed=True
+      Id=14D84B6E497B27370AF9B2B287ACB9EC
+      MaterialExpressionEditorX=384
+      MaterialExpressionEditorY=304
+      MaterialExpressionGuid=027188244A31EA41E3728FA1731BEC0A
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionMaterialFunctionCall_6"
+      MaterialFunction=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Pixel_Size.Pixel_Size'
+      FunctionOutputs(0)=(ExpressionOutputId=B25DD6C648F8855281C9389C60D0CE93,Output=(OutputName="Result"))
+      MaterialExpressionEditorX=-688
+      MaterialExpressionEditorY=544
+      MaterialExpressionGuid=207CED5D4654C5B9B0435DB78FE6E78A
+      Function=MaterialFunction'Outlined_WPO_Surface'
+      Outputs(0)=(OutputName="Result")
+   End Object
+   Begin Object Name="MaterialExpressionMaterialFunctionCall_7"
+      MaterialFunction=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/Screen_Position_Scale.Screen_Position_Scale'
+      FunctionInputs(0)=(ExpressionInputId=8716B5AF430FAEEE867479AC7F2B20D6,Input=(Expression=MaterialExpressionConstant'Outlined_WPO_Surface:MaterialExpressionConstant_9',InputName="X"))
+      FunctionInputs(1)=(ExpressionInputId=C5FF542C408E43D23AC6B1B5FDC4818B,Input=(Expression=MaterialExpressionConstant'Outlined_WPO_Surface:MaterialExpressionConstant_10',InputName="Y"))
+      FunctionOutputs(0)=(ExpressionOutputId=2623F73047527C8CD10536A36FBE659C,Output=(OutputName="Result"))
+      MaterialExpressionEditorX=-304
+      MaterialExpressionEditorY=688
+      MaterialExpressionGuid=0E700C4746A6D4C754F8789C0BD2C41F
+      Function=MaterialFunction'Outlined_WPO_Surface'
+      Outputs(0)=(OutputName="Result")
+   End Object
+   Begin Object Name="MaterialExpressionMaterialFunctionCall_8"
+      MaterialFunction=MaterialFunction'/Game/Tile_Group_System/Materials/Functions/VertexColour_To_WS_Vector.VertexColour_To_WS_Vector'
+      FunctionInputs(0)=(ExpressionInputId=08D205554A23104DF9287490CD3BFA14,Input=(Expression=MaterialExpressionFunctionInput'Outlined_WPO_Surface:MaterialExpressionFunctionInput_2',InputName="X (R)"))
+      FunctionInputs(1)=(ExpressionInputId=9DBA23E140EC294879D7D3AB9FFE28E0,Input=(Expression=MaterialExpressionFunctionInput'Outlined_WPO_Surface:MaterialExpressionFunctionInput_5',InputName="Y (G)"))
+      FunctionInputs(2)=(ExpressionInputId=6EB8B5EC489B2113A812FF85953F3ED0,Input=(Expression=MaterialExpressionFunctionInput'Outlined_WPO_Surface:MaterialExpressionFunctionInput_6',InputName="Z (B)"))
+      FunctionInputs(3)=(ExpressionInputId=65016FB647BD79C28F9986995D4B82A5,Input=(Expression=MaterialExpressionConstant'Outlined_WPO_Surface:MaterialExpressionConstant_2',InputName="M (A)"))
+      FunctionOutputs(0)=(ExpressionOutputId=2E3418534197C0A2C57653AFD86B023A,Output=(OutputName="Result"))
+      MaterialExpressionEditorX=-944
+      MaterialExpressionEditorY=96
+      MaterialExpressionGuid=1FCE63594E921C9AD98CBCA13C33E502
+      Function=MaterialFunction'Outlined_WPO_Surface'
+      Outputs(0)=(OutputName="Result")
+   End Object
+   Begin Object Name="MaterialExpressionMax_2"
+      A=(Expression=MaterialExpressionPower'Outlined_WPO_Surface:MaterialExpressionPower_2')
+      ConstB=0.000000
+      MaterialExpressionEditorX=-848
+      MaterialExpressionEditorY=352
+      MaterialExpressionGuid=A1A1DB5E451857E8B50A2E8F74CE9805
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_10"
+      A=(Expression=MaterialExpressionMaterialFunctionCall'Outlined_WPO_Surface:MaterialExpressionMaterialFunctionCall_8')
+      B=(Expression=MaterialExpressionMax'Outlined_WPO_Surface:MaterialExpressionMax_2')
+      ConstB=0.000000
+      MaterialExpressionEditorX=-608
+      MaterialExpressionEditorY=208
+      MaterialExpressionGuid=F24B403541E5E221FE7F929AD5A66173
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_11"
+      A=(Expression=MaterialExpressionConstant'Outlined_WPO_Surface:MaterialExpressionConstant_12')
+      B=(Expression=MaterialExpressionMaterialFunctionCall'Outlined_WPO_Surface:MaterialExpressionMaterialFunctionCall_6')
+      ConstB=0.000000
+      MaterialExpressionEditorX=-528
+      MaterialExpressionEditorY=464
+      MaterialExpressionGuid=F24B403541E5E221FE7F929AD5A66173
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_7"
+      A=(Expression=MaterialExpressionMultiply'Outlined_WPO_Surface:MaterialExpressionMultiply_9')
+      B=(Expression=MaterialExpressionMaterialFunctionCall'Outlined_WPO_Surface:MaterialExpressionMaterialFunctionCall_7')
+      ConstB=0.000000
+      MaterialExpressionEditorX=-32
+      MaterialExpressionEditorY=336
+      MaterialExpressionGuid=F24B403541E5E221FE7F929AD5A66173
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_8"
+      A=(Expression=MaterialExpressionMultiply'Outlined_WPO_Surface:MaterialExpressionMultiply_7')
+      B=(Expression=MaterialExpressionFunctionInput'Outlined_WPO_Surface:MaterialExpressionFunctionInput_7')
+      ConstB=0.000000
+      MaterialExpressionEditorX=176
+      MaterialExpressionEditorY=336
+      MaterialExpressionGuid=F24B403541E5E221FE7F929AD5A66173
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionMultiply_9"
+      A=(Expression=MaterialExpressionMultiply'Outlined_WPO_Surface:MaterialExpressionMultiply_10')
+      B=(Expression=MaterialExpressionMultiply'Outlined_WPO_Surface:MaterialExpressionMultiply_11')
+      ConstB=0.000000
+      MaterialExpressionEditorX=-256
+      MaterialExpressionEditorY=336
+      MaterialExpressionGuid=F24B403541E5E221FE7F929AD5A66173
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionPower_2"
+      Base=(Expression=MaterialExpressionDistance'Outlined_WPO_Surface:MaterialExpressionDistance_2')
+      Exponent=(Expression=MaterialExpressionConstant'Outlined_WPO_Surface:MaterialExpressionConstant_13')
+      MaterialExpressionEditorX=-1008
+      MaterialExpressionEditorY=352
+      MaterialExpressionGuid=0F5E6EEC4806E499060AB7BDC7B2B8DA
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="MaterialExpressionWorldPosition_2"
+      MaterialExpressionEditorX=-1584
+      MaterialExpressionEditorY=288
+      MaterialExpressionGuid=C25C27E34E184D8564C13682A469C578
+      Function=MaterialFunction'Outlined_WPO_Surface'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   StateId=96C6E2314BF205F966B444B0C75AF2FC
+   FunctionExpressions(0)=MaterialExpressionFunctionOutput'MaterialExpressionFunctionOutput_0'
+   FunctionExpressions(1)=MaterialExpressionConstant'MaterialExpressionConstant_2'
+   FunctionExpressions(2)=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_8'
+   FunctionExpressions(3)=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_7'
+   FunctionExpressions(4)=MaterialExpressionMaterialFunctionCall'MaterialExpressionMaterialFunctionCall_6'
+   FunctionExpressions(5)=MaterialExpressionPower'MaterialExpressionPower_2'
+   FunctionExpressions(6)=MaterialExpressionMax'MaterialExpressionMax_2'
+   FunctionExpressions(7)=MaterialExpressionMultiply'MaterialExpressionMultiply_11'
+   FunctionExpressions(8)=MaterialExpressionWorldPosition'MaterialExpressionWorldPosition_2'
+   FunctionExpressions(9)=MaterialExpressionDistance'MaterialExpressionDistance_2'
+   FunctionExpressions(10)=MaterialExpressionCameraPositionWS'MaterialExpressionCameraPositionWS_2'
+   FunctionExpressions(11)=MaterialExpressionMultiply'MaterialExpressionMultiply_10'
+   FunctionExpressions(12)=MaterialExpressionMultiply'MaterialExpressionMultiply_9'
+   FunctionExpressions(13)=MaterialExpressionMultiply'MaterialExpressionMultiply_7'
+   FunctionExpressions(14)=MaterialExpressionConstant'MaterialExpressionConstant_9'
+   FunctionExpressions(15)=MaterialExpressionConstant'MaterialExpressionConstant_10'
+   FunctionExpressions(16)=MaterialExpressionConstant'MaterialExpressionConstant_12'
+   FunctionExpressions(17)=MaterialExpressionConstant'MaterialExpressionConstant_13'
+   FunctionExpressions(18)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_2'
+   FunctionExpressions(19)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_5'
+   FunctionExpressions(20)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_6'
+   FunctionExpressions(21)=MaterialExpressionMultiply'MaterialExpressionMultiply_8'
+   FunctionExpressions(22)=MaterialExpressionFunctionInput'MaterialExpressionFunctionInput_7'
+   CombinedInputTypes=15
+   CombinedOutputTypes=15
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'SceneThumbnailInfoWithPrimitive_0'
+End Object

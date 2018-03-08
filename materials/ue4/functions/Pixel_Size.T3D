@@ -1,0 +1,53 @@
+Begin Object Class=/Script/Engine.MaterialFunction Name="Pixel_Size"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionViewSize Name="MaterialExpressionViewSize_3"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionFunctionOutput Name="MaterialExpressionFunctionOutput_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionDivide Name="MaterialExpressionDivide_3"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionComponentMask Name="MaterialExpressionComponentMask_5"
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionViewSize_3"
+      MaterialExpressionEditorX=-272
+      MaterialExpressionEditorY=304
+      MaterialExpressionGuid=937564E8485E14D86CA982ACD35534B0
+      Function=MaterialFunction'Pixel_Size'
+   End Object
+   Begin Object Name="MaterialExpressionFunctionOutput_0"
+      A=(Expression=MaterialExpressionDivide'Pixel_Size:MaterialExpressionDivide_3')
+      bLastPreviewed=True
+      Id=B25DD6C648F8855281C9389C60D0CE93
+      MaterialExpressionEditorX=200
+      MaterialExpressionEditorY=300
+      MaterialExpressionGuid=21AF86D84AE0117FF4D5BF847E83E51F
+      Function=MaterialFunction'Pixel_Size'
+      bCollapsed=True
+   End Object
+   Begin Object Name="MaterialExpressionDivide_3"
+      B=(Expression=MaterialExpressionComponentMask'Pixel_Size:MaterialExpressionComponentMask_5')
+      ConstA=2.000000
+      MaterialExpressionEditorX=48
+      MaterialExpressionEditorY=304
+      MaterialExpressionGuid=09DE29A64CD7B37F9F2DF4AE5B32B3E2
+      Function=MaterialFunction'Pixel_Size'
+   End Object
+   Begin Object Name="MaterialExpressionComponentMask_5"
+      Input=(Expression=MaterialExpressionViewSize'Pixel_Size:MaterialExpressionViewSize_3')
+      R=True
+      MaterialExpressionEditorX=-112
+      MaterialExpressionEditorY=304
+      MaterialExpressionGuid=B51E774641BB3CC7F874938EC6D4B637
+      Function=MaterialFunction'Pixel_Size'
+   End Object
+   StateId=3F1AF799449F40420D9FE2A58A6E6C30
+   FunctionExpressions(0)=MaterialExpressionFunctionOutput'MaterialExpressionFunctionOutput_0'
+   FunctionExpressions(1)=MaterialExpressionDivide'MaterialExpressionDivide_3'
+   FunctionExpressions(2)=MaterialExpressionComponentMask'MaterialExpressionComponentMask_5'
+   FunctionExpressions(3)=MaterialExpressionViewSize'MaterialExpressionViewSize_3'
+   CombinedOutputTypes=15
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'SceneThumbnailInfoWithPrimitive_0'
+End Object
