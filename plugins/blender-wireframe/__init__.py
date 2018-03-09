@@ -62,24 +62,36 @@ class WireframeGenerate(bpy.types.Operator):
 
         config = {
             "debug": True,
+            "outline_inset": context.scene.outline_inset,
         }
 
         object = context.active_object
         if object.type == 'MESH':
-            generate_wireframe.reset_metadata(config, object)
-            generate_wireframe.create_metadata(config, object)
+
+            #   Reset metadata
+            generate_wireframe.metadata_reset(config, object)
+            generate_wireframe.metadata_create(config, object)
+
+            #   Load the object's mesh datablock into a bmesh
+            bm = generate_wireframe.initialize_bmesh(object)
+
+            #   Create geometry for the inner portion of the wireframe
+            generate_wireframe.geometry_create_inset(
+                config, context, bm, object)
 
         return {'FINISHED'}
 
 
 #
-#   Extract Data from Blender Mesh
+#   Set/Delete Default Configuration Values
 #
 
+def SetDefaultWireframeGenerationParameters():
+    bpy.types.Scene.outline_inset = bpy.props.FloatProperty(name="Wireframe Inset Geometry Distance", default=0.1, min=0.001, max=0.5)
 
-#
-#   Insert Addon Elements into Blender Mesh
-#
+
+def DeleteDefaultWireframeGenerationParameters():
+    del bpy.types.Scene.outline_inset
 
 
 #
@@ -87,11 +99,13 @@ class WireframeGenerate(bpy.types.Operator):
 #
 
 def register():
+    SetDefaultWireframeGenerationParameters()
     bpy.utils.register_class(WireframeTilePanel)
     bpy.utils.register_class(WireframeGenerate)
 
 
 def unregister():
+    DeleteDefaultWireframeGenerationParameters()
     bpy.utils.unregister_class(WireframeTilePanel)
     bpy.utils.unregister_class(WireframeGenerate)
 
