@@ -12,11 +12,13 @@ bl_info = {
 #
 
 if "bpy" in locals():
-    import imp
-    imp.reload(generate_wireframe)
+    import importlib
+    importlib.reload(generate_wireframe)
+    importlib.reload(helpers)
     print("Reloaded files")
 else:
     from . import generate_wireframe
+    from . import helpers
     print("Imported files")
 
 import bpy
@@ -73,7 +75,7 @@ class WireframeGenerate(bpy.types.Operator):
             generate_wireframe.metadata_create(config, object)
 
             #   Load the object's mesh datablock into a bmesh
-            bm = generate_wireframe.initialize_bmesh(object)
+            bm = helpers.object_to_bmesh(object)
 
             #   Create geometry for the inner portion of the wireframe
             generate_wireframe.geometry_create_inset(

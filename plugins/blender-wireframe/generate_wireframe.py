@@ -1,5 +1,5 @@
 #
-#   Abstract
+#   generate_wireframe.py
 #
 #   The purpose of this library is to perform the geometry and
 #   meta-data generation on an abstracted version of the source
@@ -7,29 +7,22 @@
 #   geometry/asset creation tools.
 #
 
+
 #
 #   Imports
 #
+
+if "bpy" in locals():
+    import importlib
+    importlib.reload(helpers)
+else:
+    from . import helpers
 
 import bpy
 import bmesh
 import math
 import mathutils
 from collections import namedtuple
-
-
-#
-#   Convenience functions
-#
-
-def initialize_bmesh(object):
-    bm = bmesh.new()
-    bm.from_mesh(object.data)
-    bm.faces.ensure_lookup_table()
-    bm.edges.ensure_lookup_table()
-    bm.verts.ensure_lookup_table()
-
-    return bm
 
 
 #
@@ -101,7 +94,6 @@ def metadata_reset(config, object):
 #   Geometry Creation
 #
 
-
 def geometry_create_inset(
         config, context, bm, object):
     if (config["debug"] == True):
@@ -109,14 +101,13 @@ def geometry_create_inset(
 
     #   TODO: Move to helper function (or an interface/class?)
     #   Stats from the current mesh
-    object_faces = list(bm.faces)
-    object_verts = list(bm.verts)
+    object_geometry = helpers.list_geometry(bm)
 
     #   Track the added inset outline verts that follow the existing
     #   geometry (as opposed to the inset verts)
     #   This is so they may be merged later to remove duplicates
-    lines_verts = []    #   TODO: Evaluate where to put this
-    lines_faces = []    #   TODO: Evaluate where to put this
+    lines_verts = []    #   TODO: Evaluate where to put/return this, as it used to be a global thing
+    lines_faces = []    #   TODO: Evaluate where to put/return this, as it used to be a global thing
     lines_outer_verts = set()
     unconnected_flap_points = set()
 
@@ -127,7 +118,7 @@ def geometry_create_inset(
     filler_loop_outer = set()
 
     #   Create the lines geometry on a per-face (not per-tri) basis
-    for face_counter, face in enumerate(object_faces):
+    for face_counter, face in enumerate(object_geometry["faces"]):
 
         #   Set material
         face.material_index = 0
@@ -167,34 +158,15 @@ def geometry_create_inset(
             #   TODO: Some kind of warning/check if there are no sharp edges on the object
             if loops['edges']['curr'].smooth is False:
 
-                #   Walk around the vert to find the next sharp edge on the 'fan' of faces
-                def find_next_sharp_edge(previous_face, previous_edge, vert, depth):
-                    #   TODO: This recursion depth limiter is currently arbitrary
-                    if depth < 10:
-                        for current_face in previous_edge.link_faces:
-                            if current_face is not previous_face:
-                                for current_edge in current_face.edges:
-                                    if current_edge is not previous_edge:
-                                        if current_edge.verts[0] is vert or current_edge.verts[1] is vert:
-                                            if current_edge.smooth is False:
-                                                new_vert = None
-                                                if current_edge.verts[0] is vert:
-                                                    new_vert = current_edge.verts[1]
-                                                else:
-                                                    new_vert = current_edge.verts[0]
-                                                return { 'edge': current_edge, 'vert': new_vert }
-                                            return find_next_sharp_edge(current_face, current_edge, vert, (depth + 1))
-                    return False
-
                 #   Find the next sharp edge sharing the same vert
                 if loops['edges']['prev_sharp'].smooth is True:
-                    found_edge = find_next_sharp_edge(face, loops['edges']['prev_sharp'], loops['verts']['a'], 0)
+                    found_edge = helpers.find_next_sharp_edge(face, loops['edges']['prev_sharp'], loops['verts']['a'], 0)
                     if found_edge is not False:
                         loops['edges']['prev_sharp'] = found_edge['edge']
                         loops['verts']['prev_sharp'] = found_edge['vert']
 
                 if loops['edges']['next_sharp'].smooth is True:
-                    found_edge = find_next_sharp_edge(face, loops['edges']['next_sharp'], loops['verts']['b'], 0)
+                    found_edge = helpers.find_next_sharp_edge(face, loops['edges']['next_sharp'], loops['verts']['b'], 0)
                     if found_edge is not False:
                         loops['edges']['next_sharp'] = found_edge['edge']
                         loops['verts']['next_sharp'] = found_edge['vert']
@@ -283,7 +255,7 @@ def geometry_create_inset(
                 coplanar_faces_edges = set()
                 for edge in face.edges:
                     coplanar_faces_edges.add(edge)
-                for object_face in object_faces:
+                for object_face in object_geometry["faces"]:
                     if (object_face.normal - face.normal).magnitude < 0.0001 and -0.001 < face.normal.dot(object_face.calc_center_median_weighted() - face.calc_center_median_weighted()) < 0.001:
                         for edge in object_face.edges:
                             coplanar_faces_edges.add(edge)
@@ -429,8 +401,7 @@ def geometry_create_inset(
 #         for loop in filler_loop_inset_right:
 #             loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [0.75, 0.015625]
     
-    #   Push Updates Back to the Mesh
-    bm.to_mesh(object.data)
+    
 
     #   TODO: Move to helper function
     # tile_verts_indices = []
@@ -445,16 +416,8 @@ def geometry_create_inset(
     # [outline_verts_indices.append(shiftable_vertex.vert.index) for shiftable_vertex in outline_verts if shiftable_vertex.vert.is_valid is True]
     # tile.vertex_groups['Outline'].add(outline_verts_indices, 1, 'ADD')
 
-    #   TODO: Move to helper function
-    object.vertex_groups['Object'].lock_weight = True
-    object.vertex_groups['Lines'].lock_weight = True
-    object.vertex_groups['Outline'].lock_weight = True
-
-    #   Release the bmesh object
-    bm.free()
-
-    #   Finish up mesh manipulation
-    object.data.update()
+    helpers.vertex_groups_lock(object, ["Object", "Lines", "Outline"])
+    helpers.bmesh_to_object(bm, object)
 
 
 #
@@ -484,5 +447,9 @@ class Face_UV:
         self.uv = uv
 
 
+#
+#   __main__ Check
+#
+
 if __name__ == "__main__":
-    print("__name__ == __main__")
+    print("generate_wireframe.py is not intended to be run as __main__")
