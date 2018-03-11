@@ -15,14 +15,15 @@
 if "bpy" in locals():
     import importlib
     importlib.reload(helpers)
+    importlib.reload(classes)
 else:
     from . import helpers
+    from . import classes
 
 import bpy
 import bmesh
 import math
 import mathutils
-from collections import namedtuple
 
 
 #
@@ -99,15 +100,14 @@ def geometry_create_inset(
     if (config["debug"] == True):
         print("geometry_create_inset")
 
-    #   TODO: Move to helper function (or an interface/class?)
-    #   Stats from the current mesh
+    #   Geometry (faces, edges, and verts) from the current object's mesh
     object_geometry = helpers.list_geometry(bm)
 
     #   Track the added inset outline verts that follow the existing
     #   geometry (as opposed to the inset verts)
     #   This is so they may be merged later to remove duplicates
-    lines_verts = []    #   TODO: Evaluate where to put/return this, as it used to be a global thing
-    lines_faces = []    #   TODO: Evaluate where to put/return this, as it used to be a global thing
+    lines_geometry = classes.Lines_Geometry()
+
     lines_outer_verts = set()
     unconnected_flap_points = set()
 
@@ -117,7 +117,7 @@ def geometry_create_inset(
     filler_loop_inset_right = set()
     filler_loop_outer = set()
 
-    #   Create the lines geometry on a per-face (not per-tri) basis
+    #   Create the inset lines' geometry on a per-face (not per-tri) basis
     for face_counter, face in enumerate(object_geometry["faces"]):
 
         #   Set material
@@ -244,7 +244,7 @@ def geometry_create_inset(
                 #   Create the inset outline face
                 new_face = bm.faces.new([new_vert_a_outer, new_vert_b_outer, new_vert_b_inset, new_vert_a_inset])
                 new_face.material_index = 1
-                lines_faces.append(new_face)
+                lines_geometry.faces.append(new_face)
 
                 #   Find out which edge on the face provides the best border to limit expansion of this line segment
                 maximum_limit = 10
@@ -317,7 +317,7 @@ def geometry_create_inset(
                         if (cap.outer_vert.co - new_vert_a_outer.co).magnitude < 0.0001 and (cap.inset_vert.co - new_vert_a_inset.co).magnitude > 0.0001:
                             new_filler_face_a = bm.faces.new([cap.outer_vert, new_vert_a_inset, cap.inset_vert])
                             new_filler_face_a.material_index = 1
-                            lines_faces.append(new_filler_face_a)
+                            lines_geometry.faces.append(new_filler_face_a)
                             filler_faces.add(new_filler_face_a)
 
                             #   Add the values stored in the UV layers
@@ -329,14 +329,14 @@ def geometry_create_inset(
                                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
                                     filler_loop_inset_left.add(loop)
                             break
-                    unconnected_flap_points.add(Potential_Cap_Filler_Edge(new_vert_a_outer, new_vert_a_inset))
+                    unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(new_vert_a_outer, new_vert_a_inset))
 
                 if cap_b_flap_unconnected is True:
                     for cap in unconnected_flap_points:
                         if (cap.outer_vert.co - new_vert_b_outer.co).magnitude < 0.0001 and (cap.inset_vert.co - new_vert_b_inset.co).magnitude > 0.0001:
                             new_filler_face_b = bm.faces.new([cap.outer_vert, cap.inset_vert, new_vert_b_inset])
                             new_filler_face_b.material_index = 1
-                            lines_faces.append(new_filler_face_b)
+                            lines_geometry.faces.append(new_filler_face_b)
                             filler_faces.add(new_filler_face_b)
 
                             #   Add the values stored in the UV layers
@@ -348,30 +348,25 @@ def geometry_create_inset(
                                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
                                     filler_loop_inset_right.add(loop)
                             break
-                    unconnected_flap_points.add(Potential_Cap_Filler_Edge(new_vert_b_outer, new_vert_b_inset))
-
-                #   Vector along which the edge will slide to grow the line
-                #   TODO: Why is the scaling factor being applied here, and then stored as a separate value?
-                # shifting_vector_a = ((((vector_to_prev_a * -1) * scaling_factor_a) * 0.5) + mathutils.Vector([0.5, 0.5, 0.5]))
-                # shifting_vector_b = ((((vector_to_next_b * -1) * scaling_factor_b) * 0.5) + mathutils.Vector([0.5, 0.5, 0.5]))
+                    unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(new_vert_b_outer, new_vert_b_inset))
 
                 shifting_vector_a = (vector_to_prev_a * -0.5) + mathutils.Vector([0.5, 0.5, 0.5])
                 shifting_vector_b = (vector_to_next_b * -0.5) + mathutils.Vector([0.5, 0.5, 0.5])
 
                 #   Assign the UV location for each vertex on the new face's loops
-                lines_verts.append(Shiftable_Vertex(new_vert_a_outer, Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
-                new_vert_a_outer_index = len(lines_verts) - 1
-                lines_verts[-1].uv.append(Face_UV(new_face, [0.015625, 0.015625]))
+                lines_geometry.verts.append(classes.Shiftable_Vertex(new_vert_a_outer, classes.Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
+                new_vert_a_outer_index = len(lines_geometry.verts) - 1
+                lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.015625, 0.015625]))
 
-                lines_verts.append(Shiftable_Vertex(new_vert_b_outer, Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
-                new_vert_b_outer_index = len(lines_verts) - 1
-                lines_verts[-1].uv.append(Face_UV(new_face, [0.015625, 0.109375]))
+                lines_geometry.verts.append(classes.Shiftable_Vertex(new_vert_b_outer, classes.Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
+                new_vert_b_outer_index = len(lines_geometry.verts) - 1
+                lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.015625, 0.109375]))
 
-                lines_verts.append(Shiftable_Vertex(new_vert_a_inset, Shifting_Vector(shifting_vector_a, (1 / scaling_factor_a))))
-                lines_verts[-1].uv.append(Face_UV(new_face, [0.75, 0.015625]))
+                lines_geometry.verts.append(classes.Shiftable_Vertex(new_vert_a_inset, classes.Shifting_Vector(shifting_vector_a, (1 / scaling_factor_a))))
+                lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.75, 0.015625]))
 
-                lines_verts.append(Shiftable_Vertex(new_vert_b_inset, Shifting_Vector(shifting_vector_b, (1 / scaling_factor_b))))
-                lines_verts[-1].uv.append(Face_UV(new_face, [0.75, 0.109375]))
+                lines_geometry.verts.append(classes.Shiftable_Vertex(new_vert_b_inset, classes.Shifting_Vector(shifting_vector_b, (1 / scaling_factor_b))))
+                lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.75, 0.109375]))
 
             #   Stop the cycle
             if (counter + 1) >= len(face.loops):
@@ -400,8 +395,6 @@ def geometry_create_inset(
 #             loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [0.75, 0.109375]
 #         for loop in filler_loop_inset_right:
 #             loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [0.75, 0.015625]
-    
-    
 
     #   TODO: Move to helper function
     # tile_verts_indices = []
@@ -409,42 +402,20 @@ def geometry_create_inset(
     # tile.vertex_groups['Tile'].add(tile_verts_indices, 1, 'ADD')
 
     # lines_verts_indices = []
-    # [lines_verts_indices.append(shiftable_vertex.vert.index) for shiftable_vertex in lines_verts if shiftable_vertex.vert.is_valid is True]
+    # [lines_verts_indices.append(shiftable_vertex.vert.index) for shiftable_vertex in lines_geometry.verts if shiftable_vertex.vert.is_valid is True]
     # tile.vertex_groups['Lines'].add(lines_verts_indices, 1, 'ADD')
     
     # outline_verts_indices = []
     # [outline_verts_indices.append(shiftable_vertex.vert.index) for shiftable_vertex in outline_verts if shiftable_vertex.vert.is_valid is True]
     # tile.vertex_groups['Outline'].add(outline_verts_indices, 1, 'ADD')
 
+    #   Lock vertex groups
     helpers.vertex_groups_lock(object, ["Object", "Lines", "Outline"])
+
+    #   Push data back into the object's mesh
     helpers.bmesh_to_object(bm, object)
 
-
-#
-#   Classes
-#
-
-#   Shiftable Vertex models
-Shifting_Vector = namedtuple('Shifting_Vector', ['vector', 'factor'])
-class Shiftable_Vertex:
-    def __init__(self, vert, colour):
-        self.vert = vert
-        self.colour = colour
-        self.uv = []
-    def sharp(self):
-        return not self.edge.smooth
-
-#   TODO: Comment
-class Potential_Cap_Filler_Edge:
-    def __init__(self, outer_vert, inset_vert):
-        self.outer_vert = outer_vert
-        self.inset_vert = inset_vert
-
-#   TODO: Comment
-class Face_UV:
-    def __init__(self, face, uv):
-        self.face = face
-        self.uv = uv
+    return lines_geometry
 
 
 #

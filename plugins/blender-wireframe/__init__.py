@@ -15,10 +15,12 @@ if "bpy" in locals():
     import importlib
     importlib.reload(generate_wireframe)
     importlib.reload(helpers)
+    importlib.reload(classes)
     print("Reloaded files")
 else:
     from . import generate_wireframe
     from . import helpers
+    from . import classes
     print("Imported files")
 
 import bpy
@@ -78,7 +80,7 @@ class WireframeGenerate(bpy.types.Operator):
             bm = helpers.object_to_bmesh(object)
 
             #   Create geometry for the inner portion of the wireframe
-            generate_wireframe.geometry_create_inset(
+            lines_geometry = generate_wireframe.geometry_create_inset(
                 config, context, bm, object)
 
         return {'FINISHED'}

@@ -62,7 +62,7 @@ def find_next_sharp_edge(previous_face, previous_edge, vert, depth):
 #   Metadata Functions
 #
 
-def vertex_groups_lock(object, groups, lock = True):
+def vertex_groups_lock(object, groups, lock=True):
     for group in groups:
         object.vertex_groups[group].lock_weight = lock
 
