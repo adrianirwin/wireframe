@@ -49,5 +49,5 @@ class Lines_Geometry:
 #   __main__ Check
 #
 
-if __name__ == "__main__":
-    print("classes.py is not intended to be run as __main__")
+if __name__ == '__main__':
+    print('classes.py is not intended to be run as __main__')

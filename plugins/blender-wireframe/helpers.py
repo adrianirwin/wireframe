@@ -32,7 +32,7 @@ def bmesh_to_object(bm, object):
     object.data.update()
 
 def list_geometry(bm):
-    return {"faces": list(bm.faces), "edges": list(bm.edges), "verts": list(bm.verts)}
+    return {'faces': list(bm.faces), 'edges': list(bm.edges), 'verts': list(bm.verts)}
 
 #
 #   Geometry Functions
@@ -53,7 +53,7 @@ def find_next_sharp_edge(previous_face, previous_edge, vert, depth):
                                     new_vert = current_edge.verts[1]
                                 else:
                                     new_vert = current_edge.verts[0]
-                                return {"edge": current_edge, "vert": new_vert}
+                                return {'edge': current_edge, 'vert': new_vert}
                             return find_next_sharp_edge(current_face, current_edge, vert, (depth + 1))
     return False
 
@@ -71,5 +71,5 @@ def vertex_groups_lock(object, groups, lock=True):
 #   __main__ Check
 #
 
-if __name__ == "__main__":
-    print("helpers.py is not intended to be run as __main__")
+if __name__ == '__main__':
+    print('helpers.py is not intended to be run as __main__')

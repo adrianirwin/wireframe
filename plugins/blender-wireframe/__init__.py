@@ -3,25 +3,25 @@
 #
 
 bl_info = {
-    "name": "Wireframe Generation Tools",
-    "category": "Mesh",
+    'name': 'Wireframe Generation Tools',
+    'category': 'Mesh',
 }
 
 #
 #   Imports
 #
 
-if "bpy" in locals():
+if 'bpy' in locals():
     import importlib
     importlib.reload(generate_wireframe)
     importlib.reload(helpers)
     importlib.reload(classes)
-    print("Reloaded files")
+    print('Reloaded files')
 else:
     from . import generate_wireframe
     from . import helpers
     from . import classes
-    print("Imported files")
+    print('Imported files')
 
 import bpy
 
@@ -32,11 +32,11 @@ import bpy
 
 class WireframeTilePanel(bpy.types.Panel):
     """Panel of Tools for Generating the Wireframe Geometry"""
-    bl_label = "Generate Wireframe"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Wireframe"
-    bl_context = "objectmode"
+    bl_label = 'Generate Wireframe'
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = 'Wireframe'
+    bl_context = 'objectmode'
 
     def draw(self, context):
         layout = self.layout
@@ -44,8 +44,8 @@ class WireframeTilePanel(bpy.types.Panel):
 
         #   Debugging Commands
         column_db = layout.column(align=False)
-        column_db.label("Create:")
-        column_db.operator("wireframe.generate", icon="OBJECT_DATA")
+        column_db.label('Create:')
+        column_db.operator('wireframe.generate', icon='OBJECT_DATA')
         column_db.separator()
 
 
@@ -54,9 +54,9 @@ class WireframeTilePanel(bpy.types.Panel):
 #
 
 class WireframeGenerate(bpy.types.Operator):
-    bl_idname = "wireframe.generate"
-    bl_label = "Generate Wireframe"
-    bl_description = "Create wireframe metadata and geometry for a single mesh"
+    bl_idname = 'wireframe.generate'
+    bl_label = 'Generate Wireframe'
+    bl_description = 'Create wireframe metadata and geometry for a single mesh'
  
     def execute(self, context):
 
@@ -65,8 +65,8 @@ class WireframeGenerate(bpy.types.Operator):
         #
 
         config = {
-            "debug": True,
-            "outline_inset": context.scene.outline_inset,
+            'debug': True,
+            'outline_inset': context.scene.outline_inset,
         }
 
         object = context.active_object
@@ -91,7 +91,7 @@ class WireframeGenerate(bpy.types.Operator):
 #
 
 def SetDefaultWireframeGenerationParameters():
-    bpy.types.Scene.outline_inset = bpy.props.FloatProperty(name="Wireframe Inset Geometry Distance", default=0.1, min=0.001, max=0.5)
+    bpy.types.Scene.outline_inset = bpy.props.FloatProperty(name='Wireframe Inset Geometry Distance', default=0.1, min=0.001, max=0.5)
 
 
 def DeleteDefaultWireframeGenerationParameters():
@@ -113,5 +113,5 @@ def unregister():
     bpy.utils.unregister_class(WireframeTilePanel)
     bpy.utils.unregister_class(WireframeGenerate)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     register()
