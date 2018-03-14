@@ -1,3 +1,5 @@
+#   TODO: Docstring for the module, functions, and classes
+
 #
 #   generate_wireframe.py
 #
@@ -22,7 +24,6 @@ else:
 
 import bpy
 import bmesh
-import math
 import mathutils
 
 
@@ -100,33 +101,45 @@ def geometry_create_inset(
     if (config['debug'] == True):
         print('geometry_create_inset')
 
-    #   Geometry (faces, edges, and verts) from the current object's mesh
+    #   Geometry (faces, edges, and verts) from the current
+    #   object's mesh.
     object_geometry = helpers.list_geometry(bm)
 
     #   Track the added inset outline verts that follow the existing
-    #   geometry (as opposed to the inset verts)
-    #   This is so they may be merged later to remove duplicates
+    #   geometry (as opposed to the inset verts).
+    #   This is so they may be merged later to remove duplicates.
     lines_geometry = classes.Lines_Geometry()
 
     lines_outer_verts = set()
     unconnected_flap_points = set()
 
-    #   Track the filler faces
+    #   Track the filler faces.
     filler_faces = set()
     filler_loop_inset_left = set()
     filler_loop_inset_right = set()
     filler_loop_outer = set()
 
-    #   Create the inset lines' geometry on a per-face (not per-tri) basis
+    #   Create the inset lines' geometry on a per-face
+    #   (not per-tri) basis.
     for face_counter, face in enumerate(object_geometry['faces']):
 
-        #   Set material
+        #   Set material.
         face.material_index = 0
 
-        #   Add the inset vertices
+        #   Store the inset vertices.
         lines_inset_verts = set()
         lines_perpendicular_verts = []
 
+        #   Prepare a looping structure with extra metadata for
+        #   detailed stepping-through.
+        #   The iteration is targetted on the loop of each face, and
+        #   adds detailed breakdowns of the vertices and edges that are
+        #   both 'in front' and 'behind' the current loop's position.
+        #   Finally, it is critical to know where the next vertex and
+        #   edge that are marked sharp are located. A default value is
+        #   set here, and the helpers.find_next_sharp_edge function is
+        #   called later to test and replace those values if they are
+        #   not correct.
         repeating_loop = list(face.loops) * 2
         for counter, loops in [
             (
@@ -154,90 +167,80 @@ def geometry_create_inset(
             ) for counter, loop in enumerate(repeating_loop)
         ]:
 
-            #   Skip non-sharp edges
-            #   TODO: Some kind of warning/check if there are no sharp edges on the object
+            #   Skip non-sharp edges.
+            #   TODO: Some kind of warning/check if there are
+            #   no sharp edges on the object.
             if loops['edges']['current'].smooth is False:
 
                 #   Find the next sharp edge sharing the same vert
                 if loops['edges']['prev_sharp'].smooth is True:
-                    found_edge = helpers.find_next_sharp_edge(face, loops['edges']['prev_sharp'], loops['verts']['a'], 0)
+                    found_edge = helpers.find_next_sharp_edge(
+                        face,
+                        loops['edges']['prev_sharp'],
+                        loops['verts']['a'],
+                        0
+                    )
+
                     if found_edge is not False:
                         loops['edges']['prev_sharp'] = found_edge['edge']
                         loops['verts']['prev_sharp'] = found_edge['vert']
 
                 if loops['edges']['next_sharp'].smooth is True:
-                    found_edge = helpers.find_next_sharp_edge(face, loops['edges']['next_sharp'], loops['verts']['b'], 0)
+                    found_edge = helpers.find_next_sharp_edge(face,
+                        loops['edges']['next_sharp'],
+                        loops['verts']['b'],
+                        0
+                    )
+
                     if found_edge is not False:
                         loops['edges']['next_sharp'] = found_edge['edge']
                         loops['verts']['next_sharp'] = found_edge['vert']
 
-                def geometry_create_inset_face_vertices(current_side='a'):
-                    """Create the two vertices that delineate one of the 'caps' of an inset face.
-                    Run it twice (once with 'a', and once with 'b' as the argument) to create all four of the vertices."""
-                    if (current_side not in ('a', 'b')):
-                        current_side = 'a'
-                    opposite_side = 'b' if current_side == 'a' else 'b'
-                    loop_direction = 'prev' if current_side == 'a' else 'next'
+                a_side_verts = helpers.create_inset_face_vertices(
+                    bm,
+                    config['outline_inset'],
+                    loops['loops']['current'],
+                    loops['edges']['current'],
+                    loops['verts']['a'],
+                    loops['verts']['b'],
+                    loops['verts']['prev_sharp'],
+                )
 
-                    #   Calculate the vectors describing the 'cap' edges on each end of the new face
-                    #   TODO: Re-work with the concept of inside/outside, instead of prev/next
-                    vector_to_nearest_sharp_vertex = (loops['verts'][(loop_direction + '_sharp')].co - loops['verts'][current_side].co).normalized()
-                    vector_to_opposite_side_of_flap_vertex = (loops['verts'][opposite_side].co - loops['verts'][current_side].co).normalized()
+                b_side_verts = helpers.create_inset_face_vertices(
+                    bm,
+                    config['outline_inset'],
+                    loops['loops']['current'],
+                    loops['edges']['current'],
+                    loops['verts']['b'],
+                    loops['verts']['a'],
+                    loops['verts']['next_sharp'],
+                )
 
-                    #   Test if the cap is valid, or needs to be wound back from an invalid angle due to bending around a corner to find the next sharp edge
-                    #   TODO: Currently only triggers if the angle for the cap 'edge' is closing in on 180* - need to change it to only allow up to 90* and add a filler piece if the angle is greater than that.
-                    vector_edge_tangent = (loops['edges']['current'].calc_tangent(loops['loops']['current'])).normalized()
-                    cap_angle_from_tangent = vector_to_nearest_sharp_vertex.angle(vector_edge_tangent, 0)
-
-                    #   TODO: Might need to change this check to math.pi / 4, double check the math!
-                    cap_flap_unconnected = False
-                    if cap_angle_from_tangent > ((math.pi / 2) - 0.1):
-                        cap_flap_unconnected = True
-                        vector_to_nearest_sharp_vertex = (vector_edge_tangent * -1)
-                        cap_angle_from_tangent = vector_to_nearest_sharp_vertex.angle(vector_edge_tangent, 0)
-                    else:
-                        vector_to_nearest_sharp_vertex = (vector_to_nearest_sharp_vertex * -1)
-
-                    #   Work out the shifting vector and scaling factor for the vertex
-                    #   The scaling factor of the 'cap' is to ensure it maintains a parallel edge
-                    scaling_factor = math.fabs(math.sin((math.pi / 2)) / math.sin(((math.pi / 2) - cap_angle_from_tangent)))
-
-                    #   Vector along the edge of the flap
-                    flap_edge_vector = mathutils.Vector((vector_to_opposite_side_of_flap_vertex * -0.5) + mathutils.Vector([0.5, 0.5, 0.5]))
-
-                    #   Create the new vertices
-                    new_vert_inset = bm.verts.new(mathutils.Vector(
-                        (loops['verts'][current_side].co - (vector_to_nearest_sharp_vertex * config['outline_inset'] * scaling_factor))
-                    ))
-                    new_vert_edge = bm.verts.new(loops['verts'][current_side].co)
-
-                    return {
-                        'inset': new_vert_inset, 'edge': new_vert_edge,
-                        'TEMP_vec': vector_to_nearest_sharp_vertex, 'flap_edge_vector': flap_edge_vector,
-                        'cap_flap_unconnected': cap_flap_unconnected, 'scaling_factor': scaling_factor,
-                    }
-
-                a_side_verts = geometry_create_inset_face_vertices('a')
-                b_side_verts = geometry_create_inset_face_vertices('b')
-
-                #   Store the new vertices
+                #   Store the new vertices.
                 lines_inset_verts.add(a_side_verts['inset'])
                 lines_inset_verts.add(b_side_verts['inset'])
 
                 lines_outer_verts.add(a_side_verts['edge'])
                 lines_outer_verts.add(b_side_verts['edge'])
 
-                #   Create the inset outline face
-                new_face = bm.faces.new([a_side_verts['edge'], b_side_verts['edge'], b_side_verts['inset'], a_side_verts['inset']])
+                #   Create the inset outline face.
+                new_face = bm.faces.new([
+                    a_side_verts['edge'],
+                    b_side_verts['edge'],
+                    b_side_verts['inset'],
+                    a_side_verts['inset'],
+                ])
                 new_face.material_index = 1
                 lines_geometry.faces.append(new_face)
 
-                #   Find out which edge on the face provides the best border to limit expansion of this line segment
+                #   Find out which edge on the face provides the best
+                #   border to limit expansion of this line segment
                 maximum_limit = 10
                 limit_a = maximum_limit
                 limit_b = maximum_limit
 
-                #   Gather all of the edges of the coplanar faces attached to this one
+                #   Gather all of the edges of the coplanar faces
+                #   attached to this one
                 coplanar_faces_edges = set()
                 for edge in face.edges:
                     coplanar_faces_edges.add(edge)

@@ -1,3 +1,5 @@
+#   TODO: Docstring for the module, functions, and classes
+
 #
 #   Blender Add-on Metadata
 #
