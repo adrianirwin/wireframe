@@ -196,7 +196,7 @@ def geometry_create_inset(
                         loops['edges']['next_sharp'] = found_edge['edge']
                         loops['verts']['next_sharp'] = found_edge['vert']
 
-                a_side_verts = helpers.create_inset_face_vertices(
+                a_side_cap = helpers.create_inset_face_cap(
                     bm,
                     config['outline_inset'],
                     loops['loops']['current'],
@@ -206,7 +206,7 @@ def geometry_create_inset(
                     loops['verts']['prev_sharp'],
                 )
 
-                b_side_verts = helpers.create_inset_face_vertices(
+                b_side_cap = helpers.create_inset_face_cap(
                     bm,
                     config['outline_inset'],
                     loops['loops']['current'],
@@ -217,24 +217,24 @@ def geometry_create_inset(
                 )
 
                 #   Store the new vertices.
-                lines_inset_verts.add(a_side_verts['inset'])
-                lines_inset_verts.add(b_side_verts['inset'])
+                lines_inset_verts.add(a_side_cap['vert_inset'])
+                lines_inset_verts.add(b_side_cap['vert_inset'])
 
-                lines_outer_verts.add(a_side_verts['edge'])
-                lines_outer_verts.add(b_side_verts['edge'])
+                lines_outer_verts.add(a_side_cap['vert_edge'])
+                lines_outer_verts.add(b_side_cap['vert_edge'])
 
                 #   Create the inset outline face.
                 new_face = bm.faces.new([
-                    a_side_verts['edge'],
-                    b_side_verts['edge'],
-                    b_side_verts['inset'],
-                    a_side_verts['inset'],
+                    a_side_cap['vert_edge'],
+                    b_side_cap['vert_edge'],
+                    b_side_cap['vert_inset'],
+                    a_side_cap['vert_inset'],
                 ])
                 new_face.material_index = 1
                 lines_geometry.faces.append(new_face)
 
                 #   Find out which edge on the face provides the best
-                #   border to limit expansion of this line segment
+                #   border to limit expansion of this line segment.
                 maximum_limit = 10
                 limit_a = maximum_limit
                 limit_b = maximum_limit
@@ -255,7 +255,7 @@ def geometry_create_inset(
 
                         #   Compare edges for A cap
                         if edge is not loops['edges']['prev_sharp'] and edge is not loops['edges']['prev']:
-                            intersecting_points = mathutils.geometry.intersect_line_line(loops['verts']['a'].co, (loops['verts']['a'].co + a_side_verts['TEMP_vec']), edge.verts[0].co, edge.verts[1].co)
+                            intersecting_points = mathutils.geometry.intersect_line_line(loops['verts']['a'].co, (loops['verts']['a'].co + a_side_cap['vector_to_sharp_vertex']), edge.verts[0].co, edge.verts[1].co)
 
                             #   Check if the intersection with the line defined by the edge actually occurs between the the verts making up the edge
                             if intersecting_points is not None and (intersecting_points[0] - intersecting_points[1]).magnitude < 0.00001:
@@ -269,7 +269,7 @@ def geometry_create_inset(
 
                         #   Compare edges for B cap
                         if edge is not loops['edges']['next_sharp'] and edge is not loops['edges']['next']:
-                            intersecting_points = mathutils.geometry.intersect_line_line(loops['verts']['b'].co, (loops['verts']['b'].co + b_side_verts['TEMP_vec']), edge.verts[0].co, edge.verts[1].co)
+                            intersecting_points = mathutils.geometry.intersect_line_line(loops['verts']['b'].co, (loops['verts']['b'].co + b_side_cap['vector_to_sharp_vertex']), edge.verts[0].co, edge.verts[1].co)
 
                             #   Check if the two lines actually intersect, mark the point that they do as a corner
                             if intersecting_points is not None and (intersecting_points[0] - intersecting_points[1]).magnitude < 0.00001:
@@ -283,28 +283,27 @@ def geometry_create_inset(
 
                 #   Store a vector representing the direction of the line's edge
                 for flap_loop in new_face.loops:
-                    # print('FL: ' + str(flap_loop))
-                    if flap_loop.vert is a_side_verts['inset'] or flap_loop.vert is b_side_verts['inset']:
-                        flap_loop[bm.loops.layers.uv.get('Object Texture 1 + Lines Edge XY')].uv = [a_side_verts['flap_edge_vector'].x, a_side_verts['flap_edge_vector'].y]
+                    if flap_loop.vert is a_side_cap['vert_inset'] or flap_loop.vert is b_side_cap['vert_inset']:
+                        flap_loop[bm.loops.layers.uv.get('Object Texture 1 + Lines Edge XY')].uv = [a_side_cap['edge_vector'].x, a_side_cap['edge_vector'].y]
 
                         limit = maximum_limit
-                        if flap_loop.vert is a_side_verts['inset']:
+                        if flap_loop.vert is a_side_cap['vert_inset']:
                             limit = limit_a
-                        elif flap_loop.vert is b_side_verts['inset']:
+                        elif flap_loop.vert is b_side_cap['vert_inset']:
                             limit = limit_b
                         limit = (limit / maximum_limit)
 
-                        flap_loop[bm.loops.layers.uv.get('Object Texture 2 + Lines Edge Z + Lines Offset Limit')].uv = [a_side_verts['flap_edge_vector'].z, limit]
-                    if flap_loop.vert is a_side_verts['edge'] or flap_loop.vert is b_side_verts['edge']:
+                        flap_loop[bm.loops.layers.uv.get('Object Texture 2 + Lines Edge Z + Lines Offset Limit')].uv = [a_side_cap['edge_vector'].z, limit]
+                    if flap_loop.vert is a_side_cap['vert_edge'] or flap_loop.vert is b_side_cap['vert_edge']:
                         flap_loop[bm.loops.layers.uv.get('Object Texture 1 + Lines Edge XY')].uv = [0.5, 0.5]
                         flap_loop[bm.loops.layers.uv.get('Object Texture 2 + Lines Edge Z + Lines Offset Limit')].uv = [0.5, 0.0]
-                # print(' ')
 
                 #   Find vertices of flap caps that are unconnected (have a gap due to a convex join), and join them
-                if a_side_verts['cap_flap_unconnected'] is True:
+                #   TODO: Move to helpers.py
+                if a_side_cap['inset_face_cap_unconnected'] is True:
                     for cap in unconnected_flap_points:
-                        if (cap.outer_vert.co - a_side_verts['edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - a_side_verts['inset'].co).magnitude > 0.0001:
-                            new_filler_face_a = bm.faces.new([cap.outer_vert, a_side_verts['inset'], cap.inset_vert])
+                        if (cap.outer_vert.co - a_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - a_side_cap['vert_inset'].co).magnitude > 0.0001:
+                            new_filler_face_a = bm.faces.new([cap.outer_vert, a_side_cap['vert_inset'], cap.inset_vert])
                             new_filler_face_a.material_index = 1
                             lines_geometry.faces.append(new_filler_face_a)
                             filler_faces.add(new_filler_face_a)
@@ -313,17 +312,17 @@ def geometry_create_inset(
                             for loop in new_filler_face_a.loops:
                                 if (loop.vert.co - cap.outer_vert.co).magnitude < 0.0001:
                                     filler_loop_outer.add(loop)
-                                if (loop.vert.co - a_side_verts['inset'].co).magnitude < 0.0001:
+                                if (loop.vert.co - a_side_cap['vert_inset'].co).magnitude < 0.0001:
                                     filler_loop_inset_right.add(loop)
                                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
                                     filler_loop_inset_left.add(loop)
                             break
-                    unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(a_side_verts['edge'], a_side_verts['inset']))
+                    unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(a_side_cap['vert_edge'], a_side_cap['vert_inset']))
 
-                if b_side_verts['cap_flap_unconnected'] is True:
+                if b_side_cap['inset_face_cap_unconnected'] is True:
                     for cap in unconnected_flap_points:
-                        if (cap.outer_vert.co - b_side_verts['edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - b_side_verts['inset'].co).magnitude > 0.0001:
-                            new_filler_face_b = bm.faces.new([cap.outer_vert, cap.inset_vert, b_side_verts['inset']])
+                        if (cap.outer_vert.co - b_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - b_side_cap['vert_inset'].co).magnitude > 0.0001:
+                            new_filler_face_b = bm.faces.new([cap.outer_vert, cap.inset_vert, b_side_cap['vert_inset']])
                             new_filler_face_b.material_index = 1
                             lines_geometry.faces.append(new_filler_face_b)
                             filler_faces.add(new_filler_face_b)
@@ -332,29 +331,29 @@ def geometry_create_inset(
                             for loop in new_filler_face_b.loops:
                                 if (loop.vert.co - cap.outer_vert.co).magnitude < 0.0001:
                                     filler_loop_outer.add(loop)
-                                if (loop.vert.co - b_side_verts['inset'].co).magnitude < 0.0001:
+                                if (loop.vert.co - b_side_cap['vert_inset'].co).magnitude < 0.0001:
                                     filler_loop_inset_left.add(loop)
                                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
                                     filler_loop_inset_right.add(loop)
                             break
-                    unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(b_side_verts['edge'], b_side_verts['inset']))
+                    unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(b_side_cap['vert_edge'], b_side_cap['vert_inset']))
 
-                shifting_vector_a = (a_side_verts['TEMP_vec'] * -0.5) + mathutils.Vector([0.5, 0.5, 0.5])
-                shifting_vector_b = (b_side_verts['TEMP_vec'] * -0.5) + mathutils.Vector([0.5, 0.5, 0.5])
+                shifting_vector_a = (a_side_cap['vector_to_sharp_vertex'] * -0.5) + mathutils.Vector([0.5, 0.5, 0.5])
+                shifting_vector_b = (b_side_cap['vector_to_sharp_vertex'] * -0.5) + mathutils.Vector([0.5, 0.5, 0.5])
 
                 #   Assign the UV location for each vertex on the new face's loops
-                lines_geometry.verts.append(classes.Shiftable_Vertex(a_side_verts['edge'], classes.Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
-                a_side_verts_edge_index = len(lines_geometry.verts) - 1
+                lines_geometry.verts.append(classes.Shiftable_Vertex(a_side_cap['vert_edge'], classes.Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
+                a_side_cap_edge_index = len(lines_geometry.verts) - 1
                 lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.015625, 0.015625]))
 
-                lines_geometry.verts.append(classes.Shiftable_Vertex(b_side_verts['edge'], classes.Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
-                b_side_verts_edge_index = len(lines_geometry.verts) - 1
+                lines_geometry.verts.append(classes.Shiftable_Vertex(b_side_cap['vert_edge'], classes.Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
+                b_side_cap_edge_index = len(lines_geometry.verts) - 1
                 lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.015625, 0.109375]))
 
-                lines_geometry.verts.append(classes.Shiftable_Vertex(a_side_verts['inset'], classes.Shifting_Vector(shifting_vector_a, (1 / a_side_verts['scaling_factor']))))
+                lines_geometry.verts.append(classes.Shiftable_Vertex(a_side_cap['vert_inset'], classes.Shifting_Vector(shifting_vector_a, (1 / a_side_cap['scaling_factor']))))
                 lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.75, 0.015625]))
 
-                lines_geometry.verts.append(classes.Shiftable_Vertex(b_side_verts['inset'], classes.Shifting_Vector(shifting_vector_b, (1 / b_side_verts['scaling_factor']))))
+                lines_geometry.verts.append(classes.Shiftable_Vertex(b_side_cap['vert_inset'], classes.Shifting_Vector(shifting_vector_b, (1 / b_side_cap['scaling_factor']))))
                 lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.75, 0.109375]))
 
             #   Stop the cycle

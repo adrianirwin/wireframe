@@ -75,7 +75,7 @@ def find_next_sharp_edge(previous_face, previous_edge, vert, depth):
                             current_edge, vert, (depth + 1))
     return False
 
-def create_inset_face_vertices(
+def create_inset_face_cap(
     bm,
     outline_inset,
     loop, edge,
@@ -88,48 +88,61 @@ def create_inset_face_vertices(
 
     #   Calculate the vectors describing the 'cap' edges on each end
     #   of the new face.
-    vector_to_nearest_sharp_vertex = (vert_nearest_sharp.co - vert.co).normalized()
+    vector_to_sharp_vertex = (vert_nearest_sharp.co - vert.co).normalized()
     vector_to_opposite_side_of_flap_vertex = (vert_opposite_side.co - vert.co).normalized()
 
     #   Test if the cap is valid, or needs to be wound back from an
     #   invalid angle due to bending around a corner to find the next
     #   sharp edge.
-    #   TODO: Currently only triggers if the angle for the cap 'edge'
-    #   is closing in on 180* - need to change it to only allow up
-    #   to 90* and add a filler piece if the angle is greater than that.
     vector_edge_tangent = (edge.calc_tangent(loop)).normalized()
-    cap_angle_from_tangent = vector_to_nearest_sharp_vertex.angle(vector_edge_tangent, 0)
+    angle_from_cap_to_tangent = vector_to_sharp_vertex.angle(vector_edge_tangent, 0)
 
-    #   TODO: Might need to change this check to math.pi / 4,
-    #   double check the math!
-    cap_flap_unconnected = False
-    if cap_angle_from_tangent > ((math.pi / 2) - 0.1):
-        cap_flap_unconnected = True
-        vector_to_nearest_sharp_vertex = (vector_edge_tangent * -1)
-        cap_angle_from_tangent = vector_to_nearest_sharp_vertex.angle(vector_edge_tangent, 0)
+    inset_face_cap_unconnected = False
+    if angle_from_cap_to_tangent > ((math.pi / 2) - 0.1):
+        inset_face_cap_unconnected = True
+        vector_to_sharp_vertex = (vector_edge_tangent * -1)
+        angle_from_cap_to_tangent = vector_to_sharp_vertex.angle(vector_edge_tangent, 0)
     else:
-        vector_to_nearest_sharp_vertex = (vector_to_nearest_sharp_vertex * -1)
+        vector_to_sharp_vertex = (vector_to_sharp_vertex * -1)
 
     #   Work out the shifting vector and scaling factor for the vertex
     #   The scaling factor of the 'cap' is to ensure it maintains a parallel edge
-    scaling_factor = math.fabs(math.sin((math.pi / 2)) / math.sin(((math.pi / 2) - cap_angle_from_tangent)))
+    scaling_factor = math.fabs(math.sin((math.pi / 2)) / math.sin(((math.pi / 2) - angle_from_cap_to_tangent)))
 
-    #   Vector along the edge of the flap
-    flap_edge_vector = mathutils.Vector((vector_to_opposite_side_of_flap_vertex * -0.5) + mathutils.Vector([0.5, 0.5, 0.5]))
+    #   Vector along the edge of the inset face
+    edge_vector = mathutils.Vector((vector_to_opposite_side_of_flap_vertex * -0.5) + mathutils.Vector([0.5, 0.5, 0.5]))
 
     #   Create the new vertices
-    new_vert_inset = bm.verts.new(mathutils.Vector(
-        (vert.co - (vector_to_nearest_sharp_vertex * outline_inset * scaling_factor))
+    vert_inset = bm.verts.new(mathutils.Vector(
+        (vert.co - (vector_to_sharp_vertex * outline_inset * scaling_factor))
     ))
-    new_vert_edge = bm.verts.new(vert.co)
+    vert_edge = bm.verts.new(vert.co)
 
     return {
-        'inset': new_vert_inset,'edge': new_vert_edge,
-        'TEMP_vec': vector_to_nearest_sharp_vertex,
-        'flap_edge_vector': flap_edge_vector,
-        'cap_flap_unconnected': cap_flap_unconnected,
-        'scaling_factor': scaling_factor,
+        'vert_inset': vert_inset, 'vert_edge': vert_edge,
+        'edge_vector': edge_vector, 'scaling_factor': scaling_factor,
+        'vector_to_sharp_vertex': vector_to_sharp_vertex,
+        'inset_face_cap_unconnected': inset_face_cap_unconnected,
     }
+
+# def create_inset_face_filler_between_caps():
+#     for cap in unconnected_flap_points:
+#         if (cap.outer_vert.co - a_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - a_side_cap['vert_inset'].co).magnitude > 0.0001:
+#             new_filler_face_a = bm.faces.new([cap.outer_vert, a_side_cap['vert_inset'], cap.inset_vert])
+#             new_filler_face_a.material_index = 1
+#             lines_geometry.faces.append(new_filler_face_a)
+#             filler_faces.add(new_filler_face_a)
+
+#             #   Add the values stored in the UV layers
+#             for loop in new_filler_face_a.loops:
+#                 if (loop.vert.co - cap.outer_vert.co).magnitude < 0.0001:
+#                     filler_loop_outer.add(loop)
+#                 if (loop.vert.co - a_side_cap['vert_inset'].co).magnitude < 0.0001:
+#                     filler_loop_inset_right.add(loop)
+#                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
+#                     filler_loop_inset_left.add(loop)
+#             break
+#     unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(a_side_cap['vert_edge'], a_side_cap['vert_inset']))
 
 
 #
