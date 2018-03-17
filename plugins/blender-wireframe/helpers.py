@@ -121,9 +121,49 @@ def create_inset_face_cap(
     return {
         'vert_inset': vert_inset, 'vert_edge': vert_edge,
         'edge_vector': edge_vector, 'scaling_factor': scaling_factor,
-        'vector_to_sharp_vertex': vector_to_sharp_vertex,
+        'vector_to_inset_vert': vector_to_sharp_vertex,
         'inset_face_cap_unconnected': inset_face_cap_unconnected,
     }
+
+def calculate_inset_face_cap_growth_limit(
+    vert_current, edge_nearest, edge_nearest_sharp,
+    vector_to_inset_vert,
+    coplanar_edge, coplanar_vert_a, coplanar_vert_b,
+    limit,
+):
+    """
+    Calculate how far one side ('cap') of an inset face can grow before
+    it collides with the edge of a coplanar face.
+    The limit property defines a simple maximum will be returned if the
+    calculated limit is too high.
+    """
+
+    #   Do not test the first significant edge, as the growth vector
+    #   should never intersect this edge
+    if (
+        coplanar_edge is not edge_nearest_sharp
+        and coplanar_edge is not edge_nearest
+    ):
+        #   Check if the intersection with the line defined by the edge actually occurs between the the verts making up the edge
+        intersecting_points = mathutils.geometry.intersect_line_line(
+            vert_current.co,
+            (vert_current.co + vector_to_inset_vert),
+            coplanar_vert_a.co, coplanar_vert_b.co,
+        )
+        if (
+            intersecting_points is not None
+            and (intersecting_points[0] - intersecting_points[1]).magnitude < 0.00001
+        ):
+            if (
+                #   First, check for an exact hit on either of the
+                #   vertices bounding the coplanar edge
+                (intersecting_points[1] - coplanar_vert_a.co).magnitude < 0.00001
+                or (intersecting_points[1] - coplanar_vert_b.co).magnitude < 0.00001
+                #   Next, check for a hit on the coplanar edge itself
+                or (coplanar_vert_a.co - intersecting_points[1]).dot(coplanar_vert_b.co - intersecting_points[1]) < 0
+            ):
+                return min(limit, (vert_current.co - intersecting_points[1]).magnitude)
+    return limit
 
 # def create_inset_face_filler_between_caps():
 #     for cap in unconnected_flap_points:
