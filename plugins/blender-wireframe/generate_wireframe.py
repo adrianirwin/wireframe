@@ -233,6 +233,7 @@ def geometry_create_inset(
                 new_face.material_index = 1
                 lines_geometry.faces.append(new_face)
 
+
                 #   Find out which edge on the face provides the best
                 #   border to limit expansion of this line segment.
 
@@ -243,8 +244,9 @@ def geometry_create_inset(
                 limit_a = maximum_limit
                 limit_b = maximum_limit
 
+
                 #   Gather all of the edges of the coplanar faces
-                #   attached to this one
+                #   attached to this one.
                 coplanar_faces_edges = set()
                 for edge in face.edges:
                     coplanar_faces_edges.add(edge)
@@ -256,7 +258,8 @@ def geometry_create_inset(
                         for edge in object_face.edges:
                             coplanar_faces_edges.add(edge)
 
-                #   Check all coplanar edges to find which one the flap's caps intersect with first
+                #   Check all coplanar edges to find which one the
+                #   flap's caps intersect with first as they grow.
                 for edge in coplanar_faces_edges:
                     if (
                         edge is not loops['edges']['current']
@@ -312,6 +315,7 @@ def geometry_create_inset(
                         line_direction_vector.vector.z, line_direction_vector.factor,
                     ]
 
+
                 #   Find vertices of flap caps that are unconnected (have a gap due to a convex join), and join them
                 #   TODO: Move to helpers.py
                 if a_side_cap['inset_face_cap_unconnected'] is True:
@@ -352,8 +356,14 @@ def geometry_create_inset(
                             break
                     unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(b_side_cap['vert_edge'], b_side_cap['vert_inset']))
 
+
                 #   Assign the UV coordinates for each vertex on the
-                #   new face.
+                #   new face. The fractional values (e.g. 7 / 64) are
+                #   due to the lines utilizing a texture map that is
+                #   64 pixels wide and high, and needing to align
+                #   the UV coordinates with a border in the texture.
+
+                #   Line Cap A, Edge Vertex
                 lines_geometry.verts.append(
                     classes.Shiftable_Vertex(
                         a_side_cap['vert_edge'],
@@ -361,9 +371,10 @@ def geometry_create_inset(
                     )
                 )
                 lines_geometry.verts[-1].uv.append(
-                    classes.Face_UV(new_face, [0.015625, 0.015625])
+                    classes.Face_UV(new_face, [(1 / 64), (1 / 64)])
                 )
 
+                #   Line Cap B, Edge Vertex
                 lines_geometry.verts.append(
                     classes.Shiftable_Vertex(
                         b_side_cap['vert_edge'],
@@ -371,9 +382,10 @@ def geometry_create_inset(
                     )
                 )
                 lines_geometry.verts[-1].uv.append(
-                    classes.Face_UV(new_face, [0.015625, 0.109375])
+                    classes.Face_UV(new_face, [(1 / 64), (7 / 64)])
                 )
 
+                #   Line Cap A, Inset Vertex
                 lines_geometry.verts.append(
                     classes.Shiftable_Vertex(
                         a_side_cap['vert_inset'],
@@ -384,9 +396,10 @@ def geometry_create_inset(
                     )
                 )
                 lines_geometry.verts[-1].uv.append(
-                    classes.Face_UV(new_face, [0.75, 0.015625])
+                    classes.Face_UV(new_face, [(48 / 64), (1 / 64)])
                 )
 
+                #   Line Cap B, Inset Vertex
                 lines_geometry.verts.append(
                     classes.Shiftable_Vertex(
                         b_side_cap['vert_inset'],
@@ -397,10 +410,11 @@ def geometry_create_inset(
                     )
                 )
                 lines_geometry.verts[-1].uv.append(
-                    classes.Face_UV(new_face, [0.75, 0.109375])
+                    classes.Face_UV(new_face, [(48 / 64), (7 / 64)])
                 )
 
-            #   Stop the cycle
+            #   Manually stop the cycle due to the loop being made
+            #   twice as long as its natural length.
             if (counter + 1) >= len(face.loops):
                 break
 
