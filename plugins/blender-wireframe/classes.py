@@ -11,14 +11,22 @@
 #   Imports
 #
 
-from collections import namedtuple
+import mathutils
 
 
 #
 #   Classes
 #
 
-Shifting_Vector = namedtuple('Shifting_Vector', ['vector', 'factor'])
+class Shifting_Vector:
+    """
+    Hold a factor and vector representing the limit and direction that
+    a line segment's cap may be scaled along to expand the line.
+    """
+    def __init__(self, factor=1.0, vector=mathutils.Vector([0.5, 0.5, 0.5])):
+        self.factor = factor
+        self.vector = vector
+
 class Shiftable_Vertex:
     """
     Holds both the vertex itself, and the direction and scaling factor,

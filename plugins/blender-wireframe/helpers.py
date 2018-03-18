@@ -42,6 +42,7 @@ def list_geometry(bm):
         'verts': list(bm.verts),
     }
 
+
 #
 #   Geometry Functions
 #
@@ -138,28 +139,32 @@ def calculate_inset_face_cap_growth_limit(
     calculated limit is too high.
     """
 
-    #   Do not test the first significant edge, as the growth vector
-    #   should never intersect this edge
+    #   Do not test the first edge, nor the first sharp edge, as the
+    #   growth vector will never intersect this edge due to it either
+    #   running parallel, or away, from it.
     if (
         coplanar_edge is not edge_nearest_sharp
         and coplanar_edge is not edge_nearest
     ):
-        #   Check if the intersection with the line defined by the edge
-        #   actually occurs between the the verts making up the edge
+        #   Find the points that the growth vector intersects along the
+        #   coplanar edge being tested. 
         intersecting_points = mathutils.geometry.intersect_line_line(
             vert_current.co,
             (vert_current.co + vector_to_inset_vert),
             coplanar_vert_a.co, coplanar_vert_b.co,
         )
+
+        #   Check if the intersection with the line defined by the edge
+        #   actually occurs between the the verts making up the edge.
         if (
             intersecting_points is not None
             and (intersecting_points[0] - intersecting_points[1]).magnitude < 0.00001
             and (
-                #   First, check for an exact hit on either of the
-                #   vertices bounding the coplanar edge
+                #   Check for an intersection that is either an exact
+                #   hit on either of the vertices bounding the coplanar
+                #   edge, or a hit on the coplanar edge itself.
                 (intersecting_points[1] - coplanar_vert_a.co).magnitude < 0.00001
                 or (intersecting_points[1] - coplanar_vert_b.co).magnitude < 0.00001
-                #   Next, check for a hit on the coplanar edge itself
                 or (coplanar_vert_a.co - intersecting_points[1]).dot(coplanar_vert_b.co - intersecting_points[1]) < 0
             )
         ):
@@ -185,6 +190,18 @@ def calculate_inset_face_cap_growth_limit(
 #             break
 #     unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(a_side_cap['vert_edge'], a_side_cap['vert_inset']))
 
+
+#
+#   Vector Functions
+#
+
+def convert_vector_to_colour(vector):
+    """
+    A normalized vector has a range from -1.0 to 1.0, this converts it
+    to a range of 0.0 to 1.0, with the new 'midpoint' at 0.5, instead
+    of 0.0, very useful for packing vectors into vertex colours.
+    """
+    return ((vector * -0.5) + mathutils.Vector([0.5, 0.5, 0.5]))
 
 #
 #   Metadata Functions

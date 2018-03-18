@@ -282,33 +282,35 @@ def geometry_create_inset(
                             limit_b,
                         )
 
-                #   Store a vector representing the direction of the line's edge
+                #   Store a vector representing the direction along
+                #   which that particular line fragment runs.
+                #   Also, store the limit of that line fragment's cap
+                #   that may expand.
                 for loop in new_face.loops:
 
-                    #   
+                    line_direction_vector = classes.Shifting_Vector(0.0)
+
+                    #   The line direction vector is only needed on the
+                    #   inset portion of the new face
                     if loop.vert is a_side_cap['vert_inset'] or loop.vert is b_side_cap['vert_inset']:
+
+                        line_direction_vector.vector.x = a_side_cap['edge_vector'].x
+                        line_direction_vector.vector.y = a_side_cap['edge_vector'].y
+                        line_direction_vector.vector.z = a_side_cap['edge_vector'].z
+
                         limit = maximum_limit
                         if loop.vert is a_side_cap['vert_inset']:
                             limit = limit_a
                         elif loop.vert is b_side_cap['vert_inset']:
                             limit = limit_b
-                        limit = (limit / maximum_limit)
+                        line_direction_vector.factor = (limit / maximum_limit)
 
-                        loop[bm.loops.layers.uv.get('Object Texture 1 + Lines Edge XY')].uv = [
-                            a_side_cap['edge_vector'].x, a_side_cap['edge_vector'].y
-                        ]
-                        loop[bm.loops.layers.uv.get('Object Texture 2 + Lines Edge Z + Lines Offset Limit')].uv = [
-                            a_side_cap['edge_vector'].z, limit
-                        ]
-
-                    #   
-                    if loop.vert is a_side_cap['vert_edge'] or loop.vert is b_side_cap['vert_edge']:
-                        loop[bm.loops.layers.uv.get('Object Texture 1 + Lines Edge XY')].uv = [
-                            0.5, 0.5
-                        ]
-                        loop[bm.loops.layers.uv.get('Object Texture 2 + Lines Edge Z + Lines Offset Limit')].uv = [
-                            0.5, 0.0
-                        ]
+                    loop[bm.loops.layers.uv.get('Object Texture 1 + Lines Edge XY')].uv = [
+                        line_direction_vector.vector.x, line_direction_vector.vector.y,
+                    ]
+                    loop[bm.loops.layers.uv.get('Object Texture 2 + Lines Edge Z + Lines Offset Limit')].uv = [
+                        line_direction_vector.vector.z, line_direction_vector.factor,
+                    ]
 
                 #   Find vertices of flap caps that are unconnected (have a gap due to a convex join), and join them
                 #   TODO: Move to helpers.py
@@ -350,23 +352,53 @@ def geometry_create_inset(
                             break
                     unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(b_side_cap['vert_edge'], b_side_cap['vert_inset']))
 
-                shifting_vector_a = (a_side_cap['vector_to_inset_vert'] * -0.5) + mathutils.Vector([0.5, 0.5, 0.5])
-                shifting_vector_b = (b_side_cap['vector_to_inset_vert'] * -0.5) + mathutils.Vector([0.5, 0.5, 0.5])
+                #   Assign the UV coordinates for each vertex on the
+                #   new face.
+                lines_geometry.verts.append(
+                    classes.Shiftable_Vertex(
+                        a_side_cap['vert_edge'],
+                        classes.Shifting_Vector()
+                    )
+                )
+                lines_geometry.verts[-1].uv.append(
+                    classes.Face_UV(new_face, [0.015625, 0.015625])
+                )
 
-                #   Assign the UV location for each vertex on the new face's loops
-                lines_geometry.verts.append(classes.Shiftable_Vertex(a_side_cap['vert_edge'], classes.Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
-                a_side_cap_edge_index = len(lines_geometry.verts) - 1
-                lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.015625, 0.015625]))
+                lines_geometry.verts.append(
+                    classes.Shiftable_Vertex(
+                        b_side_cap['vert_edge'],
+                        classes.Shifting_Vector()
+                    )
+                )
+                lines_geometry.verts[-1].uv.append(
+                    classes.Face_UV(new_face, [0.015625, 0.109375])
+                )
 
-                lines_geometry.verts.append(classes.Shiftable_Vertex(b_side_cap['vert_edge'], classes.Shifting_Vector(mathutils.Vector(([0.5, 0.5, 0.5])), 1.0)))
-                b_side_cap_edge_index = len(lines_geometry.verts) - 1
-                lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.015625, 0.109375]))
+                lines_geometry.verts.append(
+                    classes.Shiftable_Vertex(
+                        a_side_cap['vert_inset'],
+                        classes.Shifting_Vector(
+                            (1 / a_side_cap['scaling_factor']),
+                            helpers.convert_vector_to_colour(a_side_cap['vector_to_inset_vert'])
+                        )
+                    )
+                )
+                lines_geometry.verts[-1].uv.append(
+                    classes.Face_UV(new_face, [0.75, 0.015625])
+                )
 
-                lines_geometry.verts.append(classes.Shiftable_Vertex(a_side_cap['vert_inset'], classes.Shifting_Vector(shifting_vector_a, (1 / a_side_cap['scaling_factor']))))
-                lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.75, 0.015625]))
-
-                lines_geometry.verts.append(classes.Shiftable_Vertex(b_side_cap['vert_inset'], classes.Shifting_Vector(shifting_vector_b, (1 / b_side_cap['scaling_factor']))))
-                lines_geometry.verts[-1].uv.append(classes.Face_UV(new_face, [0.75, 0.109375]))
+                lines_geometry.verts.append(
+                    classes.Shiftable_Vertex(
+                        b_side_cap['vert_inset'],
+                        classes.Shifting_Vector(
+                            (1 / b_side_cap['scaling_factor']),
+                            helpers.convert_vector_to_colour(b_side_cap['vector_to_inset_vert'])
+                        )
+                    )
+                )
+                lines_geometry.verts[-1].uv.append(
+                    classes.Face_UV(new_face, [0.75, 0.109375])
+                )
 
             #   Stop the cycle
             if (counter + 1) >= len(face.loops):
