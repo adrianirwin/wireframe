@@ -30,8 +30,10 @@ def object_to_bmesh(object):
 
     return bm
 
-def bmesh_to_object(bm, object):
+def bmesh_to_mesh(bm, object):
     bm.to_mesh(object.data)
+
+def bmesh_to_object(bm, object):
     bm.free()
     object.data.update()
 
@@ -93,8 +95,8 @@ def create_inset_face_cap(
     vector_to_opposite_side_of_flap_vertex = (vert_opposite_side.co - vert.co).normalized()
 
     #   Test if the cap is valid, or needs to be wound back from an
-    #   invalid angle due to bending around a corner to find the next
-    #   sharp edge.
+    #   invalid angle due to bending too far (> 180*) around a corner
+    #   to find the next sharp edge.
     vector_edge_tangent = (edge.calc_tangent(loop)).normalized()
     angle_from_cap_to_tangent = vector_to_sharp_vertex.angle(vector_edge_tangent, 0)
 
@@ -107,7 +109,8 @@ def create_inset_face_cap(
         vector_to_sharp_vertex = (vector_to_sharp_vertex * -1)
 
     #   Work out the shifting vector and scaling factor for the vertex
-    #   The scaling factor of the 'cap' is to ensure it maintains a parallel edge
+    #   The scaling factor of the "cap" is to ensure it maintains a
+    #   parallel edge.
     scaling_factor = math.fabs(math.sin((math.pi / 2)) / math.sin(((math.pi / 2) - angle_from_cap_to_tangent)))
 
     #   Vector along the edge of the inset face
@@ -190,6 +193,22 @@ def calculate_inset_face_cap_growth_limit(
 #             break
 #     unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(a_side_cap['vert_edge'], a_side_cap['vert_inset']))
 
+def list_vertices_indicies(vertices):
+    """
+
+    """
+    vertices_indices = []
+    [vertices_indices.append(vertex.index) for vertex in vertices if vertex.is_valid is True]
+    return vertices_indices
+
+def list_shiftable_vertices_indicies(vertices):
+    """
+
+    """
+    vertices_indices = []
+    [vertices_indices.append(shiftable_vertex.vert.index) for shiftable_vertex in vertices if shiftable_vertex.vert.is_valid is True]
+    return vertices_indices
+
 
 #
 #   Vector Functions
@@ -202,6 +221,7 @@ def convert_vector_to_colour(vector):
     of 0.0, very useful for packing vectors into vertex colours.
     """
     return ((vector * -0.5) + mathutils.Vector([0.5, 0.5, 0.5]))
+
 
 #
 #   Metadata Functions

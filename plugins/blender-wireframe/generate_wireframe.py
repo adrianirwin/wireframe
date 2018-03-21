@@ -97,21 +97,15 @@ def metadata_reset(config, object):
 #
 
 def geometry_create_inset(
-        config, context, bm, object):
+        config, context, bm, object
+):
     if (config['debug'] == True):
         print('geometry_create_inset')
 
     #   Geometry (faces, edges, and verts) from the current
     #   object's mesh.
     object_geometry = helpers.list_geometry(bm)
-
-    #   Track the added inset outline verts that follow the existing
-    #   geometry (as opposed to the inset verts).
-    #   This is so they may be merged later to remove duplicates.
     lines_geometry = classes.Lines_Geometry()
-
-    lines_outer_verts = set()
-    unconnected_flap_points = set()
 
     #   Track the filler faces.
     filler_faces = set()
@@ -123,12 +117,14 @@ def geometry_create_inset(
     #   (not per-tri) basis.
     for face_counter, face in enumerate(object_geometry['faces']):
 
+        #   Track the added inset outline verts that follow the
+        #   existing geometry (as opposed to the inset verts).
+        #   This is so they may be merged later to remove duplicates.
+        unconnected_flap_points = set()
+        lines_inset_verts = set()
+
         #   Set material.
         face.material_index = 0
-
-        #   Store the inset vertices.
-        lines_inset_verts = set()
-        lines_perpendicular_verts = []
 
         #   Prepare a looping structure with extra metadata for
         #   detailed stepping-through.
@@ -220,9 +216,6 @@ def geometry_create_inset(
                 lines_inset_verts.add(a_side_cap['vert_inset'])
                 lines_inset_verts.add(b_side_cap['vert_inset'])
 
-                lines_outer_verts.add(a_side_cap['vert_edge'])
-                lines_outer_verts.add(b_side_cap['vert_edge'])
-
                 #   Create the inset outline face.
                 new_face = bm.faces.new([
                     a_side_cap['vert_edge'],
@@ -258,6 +251,7 @@ def geometry_create_inset(
                         for edge in object_face.edges:
                             coplanar_faces_edges.add(edge)
 
+
                 #   Check all coplanar edges to find which one the
                 #   flap's caps intersect with first as they grow.
                 for edge in coplanar_faces_edges:
@@ -284,6 +278,7 @@ def geometry_create_inset(
                             edge, edge.verts[0], edge.verts[1],
                             limit_b,
                         )
+
 
                 #   Store a vector representing the direction along
                 #   which that particular line fragment runs.
@@ -319,45 +314,63 @@ def geometry_create_inset(
                 #   Find vertices of flap caps that are unconnected (have a gap due to a convex join), and join them
                 #   TODO: Move to helpers.py
                 if a_side_cap['inset_face_cap_unconnected'] is True:
+                    made_cap_filler = False
                     for cap in unconnected_flap_points:
-                        if (cap.outer_vert.co - a_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - a_side_cap['vert_inset'].co).magnitude > 0.0001:
-                            new_filler_face_a = bm.faces.new([cap.outer_vert, a_side_cap['vert_inset'], cap.inset_vert])
+                        # print('A SIDE:   ' + str(cap.edge_vert) + ' ' + str(a_side_cap['vert_edge']) + ' ' + str(cap.inset_vert) + ' ' + str(a_side_cap['vert_inset']))
+                        if (cap.edge_vert.co - a_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - a_side_cap['vert_inset'].co).magnitude > 0.0001:
+                            new_filler_face_a = bm.faces.new([cap.edge_vert, a_side_cap['vert_inset'], cap.inset_vert])
                             new_filler_face_a.material_index = 1
                             lines_geometry.faces.append(new_filler_face_a)
                             filler_faces.add(new_filler_face_a)
 
                             #   Add the values stored in the UV layers
                             for loop in new_filler_face_a.loops:
-                                if (loop.vert.co - cap.outer_vert.co).magnitude < 0.0001:
+                                if (loop.vert.co - cap.edge_vert.co).magnitude < 0.0001:
                                     filler_loop_outer.add(loop)
                                 if (loop.vert.co - a_side_cap['vert_inset'].co).magnitude < 0.0001:
                                     filler_loop_inset_right.add(loop)
                                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
                                     filler_loop_inset_left.add(loop)
+
+                            # print('A LEN 1 ' + str(len(unconnected_flap_points)))
+                            unconnected_flap_points.remove(cap)
+                            # print('A LEN 2 ' + str(len(unconnected_flap_points)))
+                            made_cap_filler = True
                             break
-                    unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(a_side_cap['vert_edge'], a_side_cap['vert_inset']))
+                    if made_cap_filler == False:
+                        unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(a_side_cap['vert_edge'], a_side_cap['vert_inset']))
+                        # print('A ADD:   ' + str(a_side_cap['vert_edge']) + ' ' + str(a_side_cap['vert_inset']))
 
                 if b_side_cap['inset_face_cap_unconnected'] is True:
+                    made_cap_filler = False
                     for cap in unconnected_flap_points:
-                        if (cap.outer_vert.co - b_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - b_side_cap['vert_inset'].co).magnitude > 0.0001:
-                            new_filler_face_b = bm.faces.new([cap.outer_vert, cap.inset_vert, b_side_cap['vert_inset']])
+                        # print('B SIDE:   ' + str(cap.edge_vert) + ' ' + str(b_side_cap['vert_edge']) + ' ' + str(cap.inset_vert) + ' ' + str(b_side_cap['vert_inset']))
+                        if (cap.edge_vert.co - b_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - b_side_cap['vert_inset'].co).magnitude > 0.0001:
+                            new_filler_face_b = bm.faces.new([cap.edge_vert, cap.inset_vert, b_side_cap['vert_inset']])
                             new_filler_face_b.material_index = 1
                             lines_geometry.faces.append(new_filler_face_b)
                             filler_faces.add(new_filler_face_b)
 
                             #   Add the values stored in the UV layers
                             for loop in new_filler_face_b.loops:
-                                if (loop.vert.co - cap.outer_vert.co).magnitude < 0.0001:
+                                if (loop.vert.co - cap.edge_vert.co).magnitude < 0.0001:
                                     filler_loop_outer.add(loop)
                                 if (loop.vert.co - b_side_cap['vert_inset'].co).magnitude < 0.0001:
                                     filler_loop_inset_left.add(loop)
                                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
                                     filler_loop_inset_right.add(loop)
+
+                            # print('B LEN 1 ' + str(len(unconnected_flap_points)))
+                            unconnected_flap_points.remove(cap)
+                            # print('B LEN 2 ' + str(len(unconnected_flap_points)))
+                            made_cap_filler = True
                             break
-                    unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(b_side_cap['vert_edge'], b_side_cap['vert_inset']))
+                    if made_cap_filler == False:
+                        unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(b_side_cap['vert_edge'], b_side_cap['vert_inset']))
+                        # print('B ADD:   ' + str(b_side_cap['vert_edge']) + ' ' + str(b_side_cap['vert_inset']))
 
 
-                #   Assign the UV coordinates for each vertex on the
+                #   Store the UV coordinates for each vertex on the
                 #   new face. The fractional values (e.g. 7 / 64) are
                 #   due to the lines utilizing a texture map that is
                 #   64 pixels wide and high, and needing to align
@@ -413,52 +426,62 @@ def geometry_create_inset(
                     classes.Face_UV(new_face, [(48 / 64), (7 / 64)])
                 )
 
+
             #   Manually stop the cycle due to the loop being made
             #   twice as long as its natural length.
             if (counter + 1) >= len(face.loops):
                 break
 
-        #   Remove duplicate vertices that are formed when dealing with flaps that have to form around bends
+        #   Remove duplicate vertices that are formed when dealing with
+        #   flaps that have to form around bends.
         bmesh.ops.remove_doubles(bm, verts=list(lines_inset_verts), dist=0.0001)
 
-#     #   Copy values stored in UV Maps to the filler faces that join some flaps
-#     #   NOTE: This is the part that does not offset, so having overlapping vertices is pointless
-#     if config['outline_inset_type'] == 'FLAP':
-#         # print('filler_faces' + str(len(filler_faces)))
-#         # print('filler_loop_outer' + str(len(filler_loop_outer)))
-#         # print('filler_loop_inset_left' + str(len(filler_loop_inset_left)))
-#         # print('filler_loop_inset_right' + str(len(filler_loop_inset_right)))
-#         for filler_face in filler_faces:
-#             for loop in filler_face.loops:
-#                 for reference_loop in loop.vert.link_loops:
-#                     if reference_loop is not loop:
-#                         loop[bm.loops.layers.uv.get('Tile Top Texture + Lines Edge XY')].uv = reference_loop[bm.loops.layers.uv.get('Tile Top Texture + Lines Edge XY')].uv
-#                         loop[bm.loops.layers.uv.get('Tile Pattern Texture + Lines Edge Z + Lines Offset Limit')].uv = reference_loop[bm.loops.layers.uv.get('Tile Pattern Texture + Lines Edge Z + Lines Offset Limit')].uv
 
-#         for loop in filler_loop_outer:
-#             loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [0.015625, 0.0625]
-#         for loop in filler_loop_inset_left:
-#             loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [0.75, 0.109375]
-#         for loop in filler_loop_inset_right:
-#             loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [0.75, 0.015625]
+    #   Assign UV values and vertex colours stored in the new vertices
+    #   to the child vertices of the new faces' loops.
+    for face in lines_geometry.faces:
+        if face.is_valid is True:
+            for loop in face.loops:
+                for shiftable_vertex in lines_geometry.verts:
+                    if shiftable_vertex.vert is loop.vert:
+                        loop[bm.loops.layers.color.get('Col')] = shiftable_vertex.colour.vector
+                        loop[bm.loops.layers.color.get('Col_ALPHA')] = ([shiftable_vertex.colour.factor] * 3)
+                        face_loop_uv = [face_uv.uv for face_uv in shiftable_vertex.uv if face_uv.face is face]
+                        if len(face_loop_uv) > 0:
+                            loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = face_loop_uv[0]
 
-    #   TODO: Move to helper function
-    # tile_verts_indices = []
-    # [tile_verts_indices.append(shiftable_vertex.vert.index) for shiftable_vertex in tile_verts if shiftable_vertex.vert.is_valid is True]
-    # tile.vertex_groups['Tile'].add(tile_verts_indices, 1, 'ADD')
 
-    # lines_verts_indices = []
-    # [lines_verts_indices.append(shiftable_vertex.vert.index) for shiftable_vertex in lines_geometry.verts if shiftable_vertex.vert.is_valid is True]
-    # tile.vertex_groups['Lines'].add(lines_verts_indices, 1, 'ADD')
-    
-    # outline_verts_indices = []
-    # [outline_verts_indices.append(shiftable_vertex.vert.index) for shiftable_vertex in outline_verts if shiftable_vertex.vert.is_valid is True]
-    # tile.vertex_groups['Outline'].add(outline_verts_indices, 1, 'ADD')
+    #   Copy values stored in UV Maps to the filler faces. This is the
+    #   part that is not shifted by the shader, so having overlapping
+    #   vertices is pointless.
+    for filler_face in filler_faces:
+        for loop in filler_face.loops:
+            for reference_loop in loop.vert.link_loops:
+                if reference_loop is not loop:
+                    loop[bm.loops.layers.uv.get('Object Texture 1 + Lines Edge XY')].uv = reference_loop[bm.loops.layers.uv.get('Object Texture 1 + Lines Edge XY')].uv
+                    loop[bm.loops.layers.uv.get('Object Texture 2 + Lines Edge Z + Lines Offset Limit')].uv = reference_loop[bm.loops.layers.uv.get('Object Texture 2 + Lines Edge Z + Lines Offset Limit')].uv
+
+    for loop in filler_loop_outer:
+        loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [(1 / 64), (4 / 64)]
+    for loop in filler_loop_inset_left:
+        loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [(48 / 64), (7 / 64)]
+    for loop in filler_loop_inset_right:
+        loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [(48 / 64), (1 / 64)]
+
+
+    #   Push updated mesh data back into the object's mesh
+    helpers.bmesh_to_mesh(bm, object)
+
+
+    #   Assign vertices to vertex groups.
+    object.vertex_groups['Object'].add(helpers.list_vertices_indicies(object_geometry['verts']), 1, 'ADD')
+    object.vertex_groups['Lines'].add(helpers.list_shiftable_vertices_indicies(lines_geometry.verts), 1, 'ADD')
 
     #   Lock vertex groups
     helpers.vertex_groups_lock(object, ['Object', 'Lines', 'Outline'])
 
-    #   Push data back into the object's mesh
+
+    #   Finished metadata updates to the object
     helpers.bmesh_to_object(bm, object)
 
     return lines_geometry

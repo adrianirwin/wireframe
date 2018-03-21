@@ -44,8 +44,8 @@ class Shiftable_Vertex:
         return not self.edge.smooth
 
 class Potential_Cap_Filler_Edge:
-    def __init__(self, outer_vert, inset_vert):
-        self.outer_vert = outer_vert
+    def __init__(self, edge_vert, inset_vert):
+        self.edge_vert = edge_vert
         self.inset_vert = inset_vert
 
 class Face_UV:
