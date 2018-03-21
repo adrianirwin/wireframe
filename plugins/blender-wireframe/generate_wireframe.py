@@ -105,9 +105,13 @@ def geometry_create_inset(
     #   Geometry (faces, edges, and verts) from the current
     #   object's mesh.
     object_geometry = helpers.list_geometry(bm)
+
+    #   Newly created geometry (faces and verts) for the inset lines.
     lines_geometry = classes.Lines_Geometry()
 
-    #   Track the filler faces.
+    #   Filler faces that need to be generated when two inset line
+    #   faces do not join due to being created on two edges that meet
+    #   at an angle of >180*.
     filler_faces = set()
     filler_loop_inset_left = set()
     filler_loop_inset_right = set()
@@ -124,6 +128,8 @@ def geometry_create_inset(
         lines_inset_verts = set()
 
         #   Set material.
+        #   TODO: Move into function that deals specifically with the
+        #   object's geometry, not the lines geometry.
         face.material_index = 0
 
         #   Prepare a looping structure with extra metadata for
@@ -316,7 +322,6 @@ def geometry_create_inset(
                 if a_side_cap['inset_face_cap_unconnected'] is True:
                     made_cap_filler = False
                     for cap in unconnected_flap_points:
-                        # print('A SIDE:   ' + str(cap.edge_vert) + ' ' + str(a_side_cap['vert_edge']) + ' ' + str(cap.inset_vert) + ' ' + str(a_side_cap['vert_inset']))
                         if (cap.edge_vert.co - a_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - a_side_cap['vert_inset'].co).magnitude > 0.0001:
                             new_filler_face_a = bm.faces.new([cap.edge_vert, a_side_cap['vert_inset'], cap.inset_vert])
                             new_filler_face_a.material_index = 1
@@ -332,19 +337,15 @@ def geometry_create_inset(
                                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
                                     filler_loop_inset_left.add(loop)
 
-                            # print('A LEN 1 ' + str(len(unconnected_flap_points)))
                             unconnected_flap_points.remove(cap)
-                            # print('A LEN 2 ' + str(len(unconnected_flap_points)))
                             made_cap_filler = True
                             break
                     if made_cap_filler == False:
                         unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(a_side_cap['vert_edge'], a_side_cap['vert_inset']))
-                        # print('A ADD:   ' + str(a_side_cap['vert_edge']) + ' ' + str(a_side_cap['vert_inset']))
 
                 if b_side_cap['inset_face_cap_unconnected'] is True:
                     made_cap_filler = False
                     for cap in unconnected_flap_points:
-                        # print('B SIDE:   ' + str(cap.edge_vert) + ' ' + str(b_side_cap['vert_edge']) + ' ' + str(cap.inset_vert) + ' ' + str(b_side_cap['vert_inset']))
                         if (cap.edge_vert.co - b_side_cap['vert_edge'].co).magnitude < 0.0001 and (cap.inset_vert.co - b_side_cap['vert_inset'].co).magnitude > 0.0001:
                             new_filler_face_b = bm.faces.new([cap.edge_vert, cap.inset_vert, b_side_cap['vert_inset']])
                             new_filler_face_b.material_index = 1
@@ -360,14 +361,11 @@ def geometry_create_inset(
                                 if (loop.vert.co - cap.inset_vert.co).magnitude < 0.0001:
                                     filler_loop_inset_right.add(loop)
 
-                            # print('B LEN 1 ' + str(len(unconnected_flap_points)))
                             unconnected_flap_points.remove(cap)
-                            # print('B LEN 2 ' + str(len(unconnected_flap_points)))
                             made_cap_filler = True
                             break
                     if made_cap_filler == False:
                         unconnected_flap_points.add(classes.Potential_Cap_Filler_Edge(b_side_cap['vert_edge'], b_side_cap['vert_inset']))
-                        # print('B ADD:   ' + str(b_side_cap['vert_edge']) + ' ' + str(b_side_cap['vert_inset']))
 
 
                 #   Store the UV coordinates for each vertex on the
@@ -474,11 +472,16 @@ def geometry_create_inset(
 
 
     #   Assign vertices to vertex groups.
-    object.vertex_groups['Object'].add(helpers.list_vertices_indicies(object_geometry['verts']), 1, 'ADD')
     object.vertex_groups['Lines'].add(helpers.list_shiftable_vertices_indicies(lines_geometry.verts), 1, 'ADD')
 
+    #   TODO: Move into function that deals specifically with the
+    #   object's geometry, not the lines geometry.
+    # object.vertex_groups['Object'].add(helpers.list_vertices_indicies(object_geometry['verts']), 1, 'ADD')
+    
+
     #   Lock vertex groups
-    helpers.vertex_groups_lock(object, ['Object', 'Lines', 'Outline'])
+    # helpers.vertex_groups_lock(object, ['Object', 'Lines', 'Outline'])
+    helpers.vertex_groups_lock(object, ['Lines'])
 
 
     #   Finished metadata updates to the object
