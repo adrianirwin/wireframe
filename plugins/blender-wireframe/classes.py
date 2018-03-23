@@ -11,11 +11,35 @@
 #   Imports
 #
 
+import bpy
 import mathutils
 
 
 #
-#   Classes
+#   Modal/Dialog Classes
+#
+
+class GenericDialog(bpy.types.Operator):
+    """Generic popup dialog box, useful for alerts and notices."""
+    bl_idname = 'wm.generic_dialog'
+    bl_label = 'Generic Dialog'
+
+    message = bpy.props.StringProperty()
+
+    def execute(self, context):
+        return {'FINISHED'}
+
+    def draw(self, context):
+        layout = self.layout
+        column = layout.column(align=False)
+        column.label(self.message)
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_popup(self)
+
+
+#
+#   Meta-Geometry Classes
 #
 
 class Shifting_Vector:
@@ -67,8 +91,22 @@ class Lines_Geometry:
 
 
 #
+#   Register Classes with Blender
+#
+
+def register():
+    bpy.utils.register_class(GenericDialog)
+
+
+def unregister():
+    bpy.utils.unregister_class(GenericDialog)
+
+
+#
 #   __main__ Check
 #
 
 if __name__ == '__main__':
     print('classes.py is not intended to be run as __main__')
+else:
+    register()

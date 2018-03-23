@@ -109,6 +109,15 @@ def geometry_create_inset(
     #   Newly created geometry (faces and verts) for the inset lines.
     lines_geometry = classes.Lines_Geometry()
 
+    #   Perform tests on the object's geometry to communicate any
+    #   deficiencies that need to be addressed.
+    if any(edge.smooth == False for edge in object_geometry['edges']) == False:
+        bpy.ops.wm.generic_dialog(
+            'INVOKE_DEFAULT',
+            message='WARNING: Mesh must have edges marked as sharp.'
+        )
+        return lines_geometry
+
     #   Filler faces that need to be generated when two inset line
     #   faces do not join due to being created on two edges that meet
     #   at an angle of >180*.

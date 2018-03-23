@@ -97,7 +97,9 @@ def SetDefaultWireframeGenerationParameters():
 
 
 def DeleteDefaultWireframeGenerationParameters():
-    del bpy.types.Scene.outline_inset
+    pass
+    # print(bpy.types.Scene.outline_inset)
+    # del bpy.types.Scene.outline_inset
 
 
 #
