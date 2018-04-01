@@ -42,7 +42,6 @@ class WireframeTilePanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        scene = context.scene
 
         #   Debugging Commands
         column_db = layout.column(align=False)
@@ -68,7 +67,7 @@ class WireframeGenerate(bpy.types.Operator):
 
         config = {
             'debug': True,
-            'outline_inset': context.scene.outline_inset,
+            'outline_inset': context.user_preferences.addons[__name__].preferences.outline_inset,
         }
 
         object = context.active_object
@@ -92,14 +91,9 @@ class WireframeGenerate(bpy.types.Operator):
 #   Set/Delete Default Configuration Values
 #
 
-def SetDefaultWireframeGenerationParameters():
-    bpy.types.Scene.outline_inset = bpy.props.FloatProperty(name='Wireframe Inset Geometry Distance', default=0.1, min=0.001, max=0.5)
-
-
-def DeleteDefaultWireframeGenerationParameters():
-    pass
-    # print(bpy.types.Scene.outline_inset)
-    # del bpy.types.Scene.outline_inset
+class AddonPreferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+    outline_inset = bpy.props.FloatProperty(name='Wireframe Inset Geometry Distance', default=0.001, min=0.0001, max=0.5)
 
 
 #
@@ -107,13 +101,13 @@ def DeleteDefaultWireframeGenerationParameters():
 #
 
 def register():
-    SetDefaultWireframeGenerationParameters()
+    bpy.utils.register_class(AddonPreferences)
     bpy.utils.register_class(WireframeTilePanel)
     bpy.utils.register_class(WireframeGenerate)
 
 
 def unregister():
-    DeleteDefaultWireframeGenerationParameters()
+    bpy.utils.unregister_class(AddonPreferences)
     bpy.utils.unregister_class(WireframeTilePanel)
     bpy.utils.unregister_class(WireframeGenerate)
 

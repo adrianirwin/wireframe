@@ -47,9 +47,9 @@ class Shifting_Vector:
     Hold a factor and vector representing the limit and direction that
     a line segment's cap may be scaled along to expand the line.
     """
-    def __init__(self, factor=1.0, vector=mathutils.Vector([0.5, 0.5, 0.5])):
+    def __init__(self, factor=1.0, vector=None):
         self.factor = factor
-        self.vector = vector
+        self.vector = mathutils.Vector([0.5, 0.5, 0.5]) if vector is None else vector
 
 class Shiftable_Vertex:
     """
