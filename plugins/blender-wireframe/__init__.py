@@ -77,12 +77,13 @@ class WireframeGenerate(bpy.types.Operator):
             generate_wireframe.metadata_reset(config, object)
             generate_wireframe.metadata_create(config, object)
 
-            #   Load the object's mesh datablock into a bmesh
-            bm = helpers.object_to_bmesh(object)
+            #   Create geometry for the inner portion of the wireframe
+            generate_wireframe.geometry_modify_object(
+                config, context, object)
 
             #   Create geometry for the inner portion of the wireframe
-            lines_geometry = generate_wireframe.geometry_create_inset(
-                config, context, bm, object)
+            lines_geometry = generate_wireframe.geometry_create_inset_lines(
+                config, context, object)
 
         return {'FINISHED'}
 

@@ -96,11 +96,15 @@ def metadata_reset(config, object):
 #   Geometry Creation
 #
 
-def geometry_create_inset(
-        config, context, bm, object
+def geometry_create_inset_lines(
+        config, context, object
 ):
+    """Create the geometry, UV maps, and vertex colours for the inset lines."""
     if (config['debug'] == True):
-        print('geometry_create_inset')
+        print('geometry_create_inset_lines')
+
+    #   Load the object's mesh datablock into a bmesh
+    bm = helpers.object_to_bmesh(object)
 
     #   Geometry (faces, edges, and verts) from the current
     #   object's mesh.
@@ -497,6 +501,52 @@ def geometry_create_inset(
     helpers.bmesh_to_object(bm, object)
 
     return lines_geometry
+
+
+def geometry_modify_object(
+        config, context, object
+):
+    """Create UV maps and vertex colours for the object itself."""
+    if (config['debug'] == True):
+        print('geometry_modify_object')
+
+    #   Load the object's mesh datablock into a bmesh
+    bm = helpers.object_to_bmesh(object)
+
+    #   Geometry (faces, edges, and verts) from the current
+    #   object's mesh.
+    object_geometry = helpers.list_geometry(bm)
+
+    for vert_counter, vert in enumerate(object_geometry['verts']):
+        #   Conver the vertex to a Shiftable_Vertex
+        object_geometry['verts'][vert_counter] = classes.Shiftable_Vertex(
+            vert,
+            classes.Shifting_Vector(
+                1.0,
+                helpers.convert_vector_to_colour(vert.normal)
+            )
+        )
+
+    #   Assign vertex colours
+    for face in object_geometry['faces']:
+        for loop in face.loops:
+            for shiftable_vertex in object_geometry['verts']:
+                if shiftable_vertex.vert is loop.vert:
+                    loop[bm.loops.layers.color.get('Col')] = shiftable_vertex.colour.vector
+                    loop[bm.loops.layers.color.get('Col_ALPHA')] = ([shiftable_vertex.colour.factor] * 3)
+
+    #   Push updated mesh data back into the object's mesh
+    helpers.bmesh_to_mesh(bm, object)
+
+    #   TODO: Move into function that deals specifically with the
+    #   object's geometry, not the lines geometry.
+    object.vertex_groups['Object'].add(helpers.list_shiftable_vertices_indicies(object_geometry['verts']), 1, 'ADD')
+
+    #   Lock vertex groups
+    helpers.vertex_groups_lock(object, ['Object'])
+
+    #   Finished metadata updates to the object
+    helpers.bmesh_to_object(bm, object)
 
 
 #
