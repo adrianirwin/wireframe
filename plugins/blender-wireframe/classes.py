@@ -107,6 +107,6 @@ def unregister():
 #
 
 if __name__ == '__main__':
-    print('classes.py is not intended to be run as __main__')
+    print(__name__ + ' is not intended to be run as __main__')
 else:
     register()

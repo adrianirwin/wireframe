@@ -15,12 +15,12 @@ bl_info = {
 
 if 'bpy' in locals():
     import importlib
-    importlib.reload(generate_wireframe)
+    importlib.reload(create)
     importlib.reload(helpers)
     importlib.reload(classes)
     print('Reloaded files')
 else:
-    from . import generate_wireframe
+    from . import create
     from . import helpers
     from . import classes
     print('Imported files')
@@ -73,17 +73,17 @@ class WireframeGenerate(bpy.types.Operator):
         object = context.active_object
         if object.type == 'MESH':
 
-            #   Reset metadata
-            generate_wireframe.metadata_reset(config, object)
-            generate_wireframe.metadata_create(config, object)
+            #   Set up metadata
+            create.metadata(config, object, reset=True)
+
+            #   Create (modify, really) geometry for the surface
+            create.surface(config, context, object)
 
             #   Create geometry for the inner portion of the wireframe
-            generate_wireframe.geometry_modify_object(
-                config, context, object)
+            create.inset_lines(config, context, object)
 
-            #   Create geometry for the inner portion of the wireframe
-            lines_geometry = generate_wireframe.geometry_create_inset_lines(
-                config, context, object)
+            #   Create geometry for the outer portion of the wireframe
+            create.outline(config, context, object)
 
         return {'FINISHED'}
 

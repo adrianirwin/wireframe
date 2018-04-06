@@ -237,4 +237,4 @@ def vertex_groups_lock(object, groups, lock=True):
 #
 
 if __name__ == '__main__':
-    print('helpers.py is not intended to be run as __main__')
+    print(__name__ + ' is not intended to be run as __main__')

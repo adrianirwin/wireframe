@@ -1,7 +1,7 @@
 #   TODO: Docstring for the module, functions, and classes
 
 #
-#   generate_wireframe.py
+#   create.py
 #
 #   The purpose of this library is to perform the geometry and
 #   meta-data generation on an abstracted version of the source
@@ -31,14 +31,42 @@ import mathutils
 #   Mesh/Object Metadata Management
 #
 
-#   Create Mesh/Object Metadata
-def metadata_create(config, object):
+def metadata(
+    config, object, reset=False
+):
+    """Create (and Reset?) Mesh/Object Metadata"""
     if (config['debug'] == True):
-        print('metadata_create')
+        print(__name__ + '.metadata')
+
+    if (reset is True):
+        #   Remove vertex groups if present
+        if ('Surface' in object.vertex_groups) is True:
+            object.vertex_groups.remove(object.vertex_groups['Surface'])
+        if ('Lines' in object.vertex_groups) is True:
+            object.vertex_groups.remove(object.vertex_groups['Lines'])
+        if ('Outline' in object.vertex_groups) is True:
+            object.vertex_groups.remove(object.vertex_groups['Outline'])
+
+        #   Remove UV maps if present
+        if ('Object Texture 1 + Lines Edge XY' in object.data.uv_textures) is True:
+            object.data.uv_textures.remove(object.data.uv_textures['Object Texture 1 + Lines Edge XY'])
+        if ('Lightmap + Lines Texture' in object.data.uv_textures) is True:
+            object.data.uv_textures.remove(object.data.uv_textures['Lightmap + Lines Texture'])
+        if ('Object Texture 2 + Lines Edge Z + Lines Offset Limit' in object.data.uv_textures) is True:
+            object.data.uv_textures.remove(object.data.uv_textures['Object Texture 2 + Lines Edge Z + Lines Offset Limit'])
+
+        #   Remove vertex colors if present
+        if ('Col' in object.data.vertex_colors) is True:
+            object.data.vertex_colors.remove(object.data.vertex_colors['Col'])
+        if ('Col_ALPHA' in object.data.vertex_colors) is True:
+            object.data.vertex_colors.remove(object.data.vertex_colors['Col_ALPHA'])
+
+        #   Clear custom split normals
+        bpy.ops.mesh.customdata_custom_splitnormals_clear()
 
     #   Create vertex groups if not already present
-    if ('Object' in object.vertex_groups) is False:
-        object.vertex_groups.new('Object')
+    if ('Surface' in object.vertex_groups) is False:
+        object.vertex_groups.new('Surface')
     if ('Lines' in object.vertex_groups) is False:
         object.vertex_groups.new('Lines')
     if ('Outline' in object.vertex_groups) is False:
@@ -61,47 +89,17 @@ def metadata_create(config, object):
     #   Add custom split normals
     bpy.ops.mesh.customdata_custom_splitnormals_add()
 
-#   Reset Mesh/Object Metadata
-def metadata_reset(config, object):
-    if (config['debug'] == True):
-        print('metadata_reset')
-
-    #   Remove vertex groups if present
-    if ('Object' in object.vertex_groups) is True:
-        object.vertex_groups.remove(object.vertex_groups['Object'])
-    if ('Lines' in object.vertex_groups) is True:
-        object.vertex_groups.remove(object.vertex_groups['Lines'])
-    if ('Outline' in object.vertex_groups) is True:
-        object.vertex_groups.remove(object.vertex_groups['Outline'])
-
-    #   Remove UV maps if present
-    if ('Object Texture 1 + Lines Edge XY' in object.data.uv_textures) is True:
-        object.data.uv_textures.remove(object.data.uv_textures['Object Texture 1 + Lines Edge XY'])
-    if ('Lightmap + Lines Texture' in object.data.uv_textures) is True:
-        object.data.uv_textures.remove(object.data.uv_textures['Lightmap + Lines Texture'])
-    if ('Object Texture 2 + Lines Edge Z + Lines Offset Limit' in object.data.uv_textures) is True:
-        object.data.uv_textures.remove(object.data.uv_textures['Object Texture 2 + Lines Edge Z + Lines Offset Limit'])
-
-    #   Remove vertex colors if present
-    if ('Col' in object.data.vertex_colors) is True:
-        object.data.vertex_colors.remove(object.data.vertex_colors['Col'])
-    if ('Col_ALPHA' in object.data.vertex_colors) is True:
-        object.data.vertex_colors.remove(object.data.vertex_colors['Col_ALPHA'])
-
-    #   Clear custom split normals
-    bpy.ops.mesh.customdata_custom_splitnormals_clear()
-
 
 #
 #   Geometry Creation
 #
 
-def geometry_create_inset_lines(
+def inset_lines(
         config, context, object
 ):
     """Create the geometry, UV maps, and vertex colours for the inset lines."""
     if (config['debug'] == True):
-        print('geometry_create_inset_lines')
+        print(__name__ + '.inset_lines')
 
     #   Load the object's mesh datablock into a bmesh
     bm = helpers.object_to_bmesh(object)
@@ -483,19 +481,11 @@ def geometry_create_inset_lines(
     #   Push updated mesh data back into the object's mesh
     helpers.bmesh_to_mesh(bm, object)
 
-
     #   Assign vertices to vertex groups.
     object.vertex_groups['Lines'].add(helpers.list_shiftable_vertices_indicies(lines_geometry.verts), 1, 'ADD')
 
-    #   TODO: Move into function that deals specifically with the
-    #   object's geometry, not the lines geometry.
-    # object.vertex_groups['Object'].add(helpers.list_vertices_indicies(object_geometry['verts']), 1, 'ADD')
-    
-
     #   Lock vertex groups
-    # helpers.vertex_groups_lock(object, ['Object', 'Lines', 'Outline'])
     helpers.vertex_groups_lock(object, ['Lines'])
-
 
     #   Finished metadata updates to the object
     helpers.bmesh_to_object(bm, object)
@@ -503,12 +493,78 @@ def geometry_create_inset_lines(
     return lines_geometry
 
 
-def geometry_modify_object(
+def outline(
         config, context, object
 ):
-    """Create UV maps and vertex colours for the object itself."""
+    """Create the geometry, UV maps, and vertex colours for the outset line."""
     if (config['debug'] == True):
-        print('geometry_modify_object')
+        print(__name__ + '.outline')
+
+    bpy.ops.object.vertex_group_set_active(group='Surface')
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    mesh_select_mode = context.tool_settings.mesh_select_mode
+    context.tool_settings.mesh_select_mode = [True, False, False]
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.object.vertex_group_select()
+
+    bpy.ops.mesh.extrude_region_shrink_fatten(
+        MESH_OT_extrude_region={"mirror": False},
+        TRANSFORM_OT_shrink_fatten={
+            "value": config['outline_inset'],
+            "use_even_offset": False, "mirror": False,
+            "proportional": 'DISABLED',
+            "proportional_edit_falloff": 'SMOOTH',
+            "proportional_size": 1,
+            "snap": False, "snap_target": 'CLOSEST',
+            "snap_point": (0, 0, 0), "snap_align": False,
+            "snap_normal": (0, 0, 0), "release_confirm": False,
+            "use_accurate": False
+        }
+    )
+
+    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+    #   Load the object's mesh datablock into a bmesh
+    bm = helpers.object_to_bmesh(object)
+
+    #   Geometry (faces, edges, and verts) from the current
+    #   object's mesh.
+    object_geometry = helpers.list_geometry(bm)
+
+    outline_verts = set()
+    for vert in object_geometry['verts']:
+        if vert.select is True:
+            outline_verts.add(vert)
+
+    # #   Newly created geometry (faces and verts) for the outline.
+    # lines_geometry = classes.Lines_Geometry()
+
+    # #   Push updated mesh data back into the object's mesh
+    # helpers.bmesh_to_mesh(bm, object)
+
+    #   Assign vertices to vertex groups.
+    object.vertex_groups['Outline'].add(helpers.list_vertices_indicies(outline_verts), 1, 'ADD')
+    object.vertex_groups['Surface'].add(helpers.list_vertices_indicies(outline_verts), 1, 'SUBTRACT')
+
+    #   Lock vertex groups
+    helpers.vertex_groups_lock(object, ['Outline'])
+
+    #   Finished metadata updates to the object
+    helpers.bmesh_to_object(bm, object)
+
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+    # return lines_geometry
+
+
+def surface(
+        config, context, object
+):
+    """Create UV maps and vertex colours for the surface."""
+    if (config['debug'] == True):
+        print(__name__ + '.surface')
 
     #   Load the object's mesh datablock into a bmesh
     bm = helpers.object_to_bmesh(object)
@@ -540,10 +596,10 @@ def geometry_modify_object(
 
     #   TODO: Move into function that deals specifically with the
     #   object's geometry, not the lines geometry.
-    object.vertex_groups['Object'].add(helpers.list_shiftable_vertices_indicies(object_geometry['verts']), 1, 'ADD')
+    object.vertex_groups['Surface'].add(helpers.list_shiftable_vertices_indicies(object_geometry['verts']), 1, 'ADD')
 
     #   Lock vertex groups
-    helpers.vertex_groups_lock(object, ['Object'])
+    helpers.vertex_groups_lock(object, ['Surface'])
 
     #   Finished metadata updates to the object
     helpers.bmesh_to_object(bm, object)
@@ -554,4 +610,4 @@ def geometry_modify_object(
 #
 
 if __name__ == '__main__':
-    print('generate_wireframe.py is not intended to be run as __main__')
+    print(__name__ + ' is not intended to be run as __main__')
