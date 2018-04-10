@@ -477,18 +477,15 @@ def inset_lines(
     for loop in filler_loop_inset_right:
         loop[bm.loops.layers.uv.get('Lightmap + Lines Texture')].uv = [(48 / 64), (1 / 64)]
 
-
     #   Push updated mesh data back into the object's mesh
     helpers.bmesh_to_mesh(bm, object)
 
-    #   Assign vertices to vertex groups.
+    #   Assign vertices to the vertex group and lock the group
     object.vertex_groups['Lines'].add(helpers.list_shiftable_vertices_indicies(lines_geometry.verts), 1, 'ADD')
-
-    #   Lock vertex groups
     helpers.vertex_groups_lock(object, ['Lines'])
 
     #   Finished metadata updates to the object
-    helpers.bmesh_to_object(bm, object)
+    helpers.bmesh_and_mesh_cleanup(bm, object)
 
     return lines_geometry
 
@@ -528,7 +525,7 @@ def outline(
     bm = helpers.object_to_bmesh(object)
 
     #   Geometry (faces, edges, and verts) from the current
-    #   object's mesh.
+    #   object's mesh
     object_geometry = helpers.list_geometry(bm)
 
     outline_verts = set()
@@ -536,27 +533,43 @@ def outline(
         if vert.select is True:
             outline_verts.add(vert)
 
-    # #   Newly created geometry (faces and verts) for the outline.
-    # lines_geometry = classes.Lines_Geometry()
+    #   Push updated mesh data back into the object's mesh
+    helpers.bmesh_to_mesh(bm, object)
 
-    # #   Push updated mesh data back into the object's mesh
-    # helpers.bmesh_to_mesh(bm, object)
-
-    #   Assign vertices to vertex groups.
+    #   Assign vertices to the vertex groups and lock the groups
+    helpers.vertex_groups_lock(object, ['Surface'], False)
     object.vertex_groups['Outline'].add(helpers.list_vertices_indicies(outline_verts), 1, 'ADD')
     object.vertex_groups['Surface'].add(helpers.list_vertices_indicies(outline_verts), 1, 'SUBTRACT')
-
-    #   Lock vertex groups
-    helpers.vertex_groups_lock(object, ['Outline'])
+    helpers.vertex_groups_lock(object, ['Outline', 'Surface'])
 
     #   Finished metadata updates to the object
-    helpers.bmesh_to_object(bm, object)
+    object_geometry = helpers.refresh_bmesh(bm, object)
 
+    #   Assign material to newly created faces
+    bpy.ops.object.vertex_group_set_active(group='Outline')
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.object.vertex_group_select()
+    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+    #   Push updated mesh data back into the object's mesh
+    helpers.bmesh_to_mesh(bm, object)
+
+    #   Set material
+    for face in object_geometry['faces']:
+        if face.select is True:
+            face.material_index = 2
+
+    #   Push updated mesh data back into the object's mesh
+    helpers.bmesh_to_mesh(bm, object)
+
+    #   Clear selection
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 
-    # return lines_geometry
+    #   Finished metadata updates to the object
+    helpers.bmesh_and_mesh_cleanup(bm, object)
 
 
 def surface(
@@ -596,13 +609,12 @@ def surface(
 
     #   TODO: Move into function that deals specifically with the
     #   object's geometry, not the lines geometry.
+    #   Assign vertices to the vertex group and lock the group
     object.vertex_groups['Surface'].add(helpers.list_shiftable_vertices_indicies(object_geometry['verts']), 1, 'ADD')
-
-    #   Lock vertex groups
     helpers.vertex_groups_lock(object, ['Surface'])
 
     #   Finished metadata updates to the object
-    helpers.bmesh_to_object(bm, object)
+    helpers.bmesh_and_mesh_cleanup(bm, object)
 
 
 #

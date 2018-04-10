@@ -33,7 +33,14 @@ def object_to_bmesh(object):
 def bmesh_to_mesh(bm, object):
     bm.to_mesh(object.data)
 
-def bmesh_to_object(bm, object):
+def refresh_bmesh(bm, object):
+    bm.from_mesh(object.data)
+    bm.faces.ensure_lookup_table()
+    bm.edges.ensure_lookup_table()
+    bm.verts.ensure_lookup_table()
+    return list_geometry(bm)
+
+def bmesh_and_mesh_cleanup(bm, object):
     bm.free()
     object.data.update()
 
