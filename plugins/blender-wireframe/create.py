@@ -101,12 +101,10 @@ def inset_lines(
     if (config['debug'] == True):
         print(__name__ + '.inset_lines')
 
-    #   Load the object's mesh datablock into a bmesh
-    bm = helpers.object_to_bmesh(object)
-
-    #   Geometry (faces, edges, and verts) from the current
-    #   object's mesh.
-    object_geometry = helpers.list_geometry(bm)
+    #   Load the object's mesh datablock into a bmesh and parse geometry from
+    #   the object's mesh.
+    bm = bmesh.new()
+    object_geometry = helpers.mesh_to_bmesh(bm, object)
 
     #   Newly created geometry (faces and verts) for the inset lines.
     lines_geometry = classes.Lines_Geometry()
@@ -497,18 +495,24 @@ def outline(
     if (config['debug'] == True):
         print(__name__ + '.outline')
 
-    bpy.ops.object.vertex_group_set_active(group='Surface')
-    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    #   Set mesh select mode to vertex
     mesh_select_mode = context.tool_settings.mesh_select_mode
     context.tool_settings.mesh_select_mode = [True, False, False]
+
+    #   Select the surface geometry
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
     bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.object.vertex_group_set_active(group='Surface')
     bpy.ops.object.vertex_group_select()
 
+    #   Duplicate the surface geometry to create the outline geometry
+    #   NOTE: This flips the normals on the surface geometry, they are flipped
+    #   back later
     bpy.ops.mesh.extrude_region_shrink_fatten(
         MESH_OT_extrude_region={"mirror": False},
         TRANSFORM_OT_shrink_fatten={
             "value": config['outline_inset'],
-            "use_even_offset": False, "mirror": False,
+            "use_even_offset": True, "mirror": False,
             "proportional": 'DISABLED',
             "proportional_edit_falloff": 'SMOOTH',
             "proportional_size": 1,
@@ -521,41 +525,13 @@ def outline(
 
     bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 
-    #   Load the object's mesh datablock into a bmesh
-    bm = helpers.object_to_bmesh(object)
+    #   Load the object's mesh datablock into a bmesh and parse geometry from
+    #   the object's mesh
+    bm = bmesh.new()
+    object_geometry = helpers.mesh_to_bmesh(bm, object)
 
-    #   Geometry (faces, edges, and verts) from the current
-    #   object's mesh
-    object_geometry = helpers.list_geometry(bm)
-
-    outline_verts = set()
-    for vert in object_geometry['verts']:
-        if vert.select is True:
-            outline_verts.add(vert)
-
-    #   Push updated mesh data back into the object's mesh
-    helpers.bmesh_to_mesh(bm, object)
-
-    #   Assign vertices to the vertex groups and lock the groups
-    helpers.vertex_groups_lock(object, ['Surface'], False)
-    object.vertex_groups['Outline'].add(helpers.list_vertices_indicies(outline_verts), 1, 'ADD')
-    object.vertex_groups['Surface'].add(helpers.list_vertices_indicies(outline_verts), 1, 'SUBTRACT')
-    helpers.vertex_groups_lock(object, ['Outline', 'Surface'])
-
-    #   Finished metadata updates to the object
-    object_geometry = helpers.refresh_bmesh(bm, object)
-
-    #   Assign material to newly created faces
-    bpy.ops.object.vertex_group_set_active(group='Outline')
-    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.ops.object.vertex_group_select()
-    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-
-    #   Push updated mesh data back into the object's mesh
-    helpers.bmesh_to_mesh(bm, object)
-
-    #   Set material
+    #   Set material -- the faces are already selected from the previous
+    #   extrusion operation.
     for face in object_geometry['faces']:
         if face.select is True:
             face.material_index = 2
@@ -563,8 +539,30 @@ def outline(
     #   Push updated mesh data back into the object's mesh
     helpers.bmesh_to_mesh(bm, object)
 
-    #   Clear selection
+    #   Build a set of the currently selected vertices; this will be the
+    #   vertices of the newly created outline geometry, as the previous
+    #   extrusion operation will leave them selected.
+    outline_verts = set()
+    for vert in object_geometry['verts']:
+        if vert.select is True:
+            outline_verts.add(vert)
+
+    #   Subtract the newly created outline vertices from the surface vertex
+    #   group and add them to the outline vertex group
+    helpers.vertex_groups_lock(object, ['Surface'], False)
+    object.vertex_groups['Outline'].add(
+        helpers.list_vertices_indicies(outline_verts), 1, 'ADD'
+    )
+    object.vertex_groups['Surface'].add(
+        helpers.list_vertices_indicies(outline_verts), 1, 'SUBTRACT'
+    )
+    helpers.vertex_groups_lock(object, ['Outline', 'Surface'])
+
+    #   Flip normals and clear selection
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    bpy.ops.object.vertex_group_set_active(group='Surface')
+    bpy.ops.object.vertex_group_select()
+    bpy.ops.mesh.flip_normals()
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 
@@ -579,13 +577,12 @@ def surface(
     if (config['debug'] == True):
         print(__name__ + '.surface')
 
-    #   Load the object's mesh datablock into a bmesh
-    bm = helpers.object_to_bmesh(object)
+    #   Load the object's mesh datablock into a bmesh and parse geometry from
+    #   the object's mesh.
+    bm = bmesh.new()
+    object_geometry = helpers.mesh_to_bmesh(bm, object)
 
-    #   Geometry (faces, edges, and verts) from the current
-    #   object's mesh.
-    object_geometry = helpers.list_geometry(bm)
-
+    #   Create shifting vertices for the surface
     for vert_counter, vert in enumerate(object_geometry['verts']):
         #   Conver the vertex to a Shiftable_Vertex
         object_geometry['verts'][vert_counter] = classes.Shiftable_Vertex(

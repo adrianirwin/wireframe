@@ -79,10 +79,10 @@ class WireframeGenerate(bpy.types.Operator):
             #   Create (modify, really) geometry for the surface
             create.surface(config, context, object)
 
-            #   Create geometry for the inner portion of the wireframe
+            #   Create geometry for the inner portion of the wireframe lines
             create.inset_lines(config, context, object)
 
-            #   Create geometry for the outer portion of the wireframe
+            #   Create geometry for the outer portion of the wireframe lines
             create.outline(config, context, object)
 
         return {'FINISHED'}

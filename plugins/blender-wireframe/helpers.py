@@ -21,35 +21,24 @@ import mathutils
 #   BMesh Functions
 #
 
-def object_to_bmesh(object):
-    bm = bmesh.new()
+def mesh_to_bmesh(bm, object):
     bm.from_mesh(object.data)
     bm.faces.ensure_lookup_table()
     bm.edges.ensure_lookup_table()
     bm.verts.ensure_lookup_table()
 
-    return bm
-
-def bmesh_to_mesh(bm, object):
-    bm.to_mesh(object.data)
-
-def refresh_bmesh(bm, object):
-    bm.from_mesh(object.data)
-    bm.faces.ensure_lookup_table()
-    bm.edges.ensure_lookup_table()
-    bm.verts.ensure_lookup_table()
-    return list_geometry(bm)
-
-def bmesh_and_mesh_cleanup(bm, object):
-    bm.free()
-    object.data.update()
-
-def list_geometry(bm):
     return {
         'faces': list(bm.faces),
         'edges': list(bm.edges),
         'verts': list(bm.verts),
     }
+
+def bmesh_to_mesh(bm, object):
+    bm.to_mesh(object.data)
+
+def bmesh_and_mesh_cleanup(bm, object):
+    bm.free()
+    object.data.update()
 
 
 #
