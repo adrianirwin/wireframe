@@ -566,6 +566,48 @@ def outline(
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 
+    helpers.bmesh_and_mesh_cleanup(bm, object)
+    bm = bmesh.new()
+    object_geometry = helpers.mesh_to_bmesh(bm, object)
+
+    #   Create shifting vertices for the outline
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.object.vertex_group_set_active(group='Outline')
+    bpy.ops.object.vertex_group_select()
+    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+    helpers.bmesh_and_mesh_cleanup(bm, object)
+    bm = bmesh.new()
+    object_geometry = helpers.mesh_to_bmesh(bm, object)
+
+    shiftable_vertices = set()
+    for vert_counter, vert in enumerate(object_geometry['verts']):
+        if vert.select is True:
+            #   Conver the vertex to a Shiftable_Vertex
+            shiftable_vertices.add(classes.Shiftable_Vertex(
+                    vert,
+                    classes.Shifting_Vector(
+                        1.0,
+                        helpers.convert_vector_to_colour(vert.normal)
+                    )
+                )
+            )
+
+    #   Assign vertex colours
+    for face in object_geometry['faces']:
+        for loop in face.loops:
+            for shiftable_vertex in shiftable_vertices:
+                if shiftable_vertex.vert is loop.vert:
+                    loop[bm.loops.layers.color.get('Col')] = shiftable_vertex.colour.vector
+                    loop[bm.loops.layers.color.get('Col_ALPHA')] = ([shiftable_vertex.colour.factor] * 3)
+    helpers.bmesh_to_mesh(bm, object)
+
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.object.vertex_group_set_active(group='Surface')
+    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
     #   Finished metadata updates to the object
     helpers.bmesh_and_mesh_cleanup(bm, object)
 
