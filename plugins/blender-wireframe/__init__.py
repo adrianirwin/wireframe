@@ -15,12 +15,31 @@ bl_info = {
 
 if 'bpy' in locals():
     import importlib
-    importlib.reload(create)
-    importlib.reload(helpers)
-    importlib.reload(classes)
+
+    try:
+        importlib.reload(create)
+    except:
+        from . import create
+
+    try:
+        importlib.reload(export)
+    except:
+        from . import export
+
+    try:
+        importlib.reload(helpers)
+    except:
+        from . import helpers
+
+    try:
+        importlib.reload(classes)
+    except:
+        from . import classes
+
     print('Reloaded files')
 else:
     from . import create
+    from . import export
     from . import helpers
     from . import classes
     print('Imported files')
@@ -29,11 +48,11 @@ import bpy
 
 
 #
-#   Blender UI Panel Layout
+#   Blender UI Panel Layouts
 #
 
-class WireframeTilePanel(bpy.types.Panel):
-    """Panel of Tools for Generating the Wireframe Geometry"""
+class WireframePanelCommands(bpy.types.Panel):
+    """Panel of Tools and Options for Generating Wireframe Geometry"""
     bl_label = 'Generate Wireframe'
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -43,11 +62,48 @@ class WireframeTilePanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        #   Debugging Commands
+        #   Creation Commands
+        column_cr = layout.column(align=False)
+        column_cr.label('Create:')
+        column_cr.operator('wireframe.generate', icon='OBJECT_DATA')
+        column_cr.separator()
+
+         #   Filenames and Paths
+        column_fp = layout.column(align=False)
+        column_fp.label("Path & Infixes:")
+        column_fp.prop(
+            context.user_preferences.addons[__name__].preferences,
+            "export_path_root", icon="FILE_FOLDER"
+        )
+        column_fp.prop(
+            context.user_preferences.addons[__name__].preferences,
+            "export_infix_object", icon="FILE_TEXT"
+        )
+        column_fp.prop(
+            context.user_preferences.addons[__name__].preferences,
+            "export_infix_shell", icon="FILE_TEXT"
+        )
+        column_fp.separator()
+
+
+class WireframePanelDebugging(bpy.types.Panel):
+    """Panel of Debugging Options for Generating Wireframe Geometry"""
+    bl_label = 'Debugging Options'
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = 'Wireframe'
+    bl_context = 'objectmode'
+
+    def draw(self, context):
+        layout = self.layout
+
+        #   Debugging Options
         column_db = layout.column(align=False)
-        column_db.label('Create:')
-        column_db.operator('wireframe.generate', icon='OBJECT_DATA')
-        column_db.separator()
+        column_db.label("Dimensions:")
+        column_db.prop(
+            context.user_preferences.addons[__name__].preferences,
+            "outline_inset"
+        )
 
 
 #
@@ -67,6 +123,10 @@ class WireframeGenerate(bpy.types.Operator):
 
         config = {
             'debug': True,
+            'verbose': True,
+            'export_path_root': context.user_preferences.addons[__name__].preferences.export_path_root,
+            'export_infix_object': context.user_preferences.addons[__name__].preferences.export_infix_object,
+            'export_infix_shell': context.user_preferences.addons[__name__].preferences.export_infix_shell,
             'outline_inset': context.user_preferences.addons[__name__].preferences.outline_inset,
         }
 
@@ -85,6 +145,9 @@ class WireframeGenerate(bpy.types.Operator):
             #   Create geometry for the outer portion of the wireframe lines
             create.outline(config, context, object)
 
+            #   Export the selected object
+            export.object(config, context, object)
+
         return {'FINISHED'}
 
 
@@ -94,6 +157,13 @@ class WireframeGenerate(bpy.types.Operator):
 
 class AddonPreferences(bpy.types.AddonPreferences):
     bl_idname = __name__
+
+    #   Filenames and Paths
+    export_path_root = bpy.props.StringProperty(name="FBX Export Folder", subtype="DIR_PATH")
+    export_infix_object = bpy.props.StringProperty(name="Object Infix", default="Object")
+    export_infix_shell = bpy.props.StringProperty(name="Shell Infix", default="Shell")
+
+    #   Dimensions
     outline_inset = bpy.props.FloatProperty(name='Wireframe Inset Geometry Distance', default=0.001, min=0.0001, max=0.5)
 
 
@@ -103,13 +173,15 @@ class AddonPreferences(bpy.types.AddonPreferences):
 
 def register():
     bpy.utils.register_class(AddonPreferences)
-    bpy.utils.register_class(WireframeTilePanel)
+    bpy.utils.register_class(WireframePanelCommands)
+    bpy.utils.register_class(WireframePanelDebugging)
     bpy.utils.register_class(WireframeGenerate)
 
 
 def unregister():
     bpy.utils.unregister_class(AddonPreferences)
-    bpy.utils.unregister_class(WireframeTilePanel)
+    bpy.utils.unregister_class(WireframePanelCommands)
+    bpy.utils.unregister_class(WireframePanelDebugging)
     bpy.utils.unregister_class(WireframeGenerate)
 
 if __name__ == '__main__':

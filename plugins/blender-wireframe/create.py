@@ -16,8 +16,17 @@
 
 if 'bpy' in locals():
     import importlib
-    importlib.reload(helpers)
-    importlib.reload(classes)
+
+    try:
+        importlib.reload(helpers)
+    except:
+        from . import helpers
+
+    try:
+        importlib.reload(classes)
+    except:
+        from . import classes
+
 else:
     from . import helpers
     from . import classes
@@ -35,7 +44,7 @@ def metadata(
     config, object, reset=False
 ):
     """Create (and Reset?) Mesh/Object Metadata"""
-    if (config['debug'] == True):
+    if (config['verbose'] == True):
         print(__name__ + '.metadata')
 
     if (reset is True):
@@ -98,7 +107,7 @@ def inset_lines(
         config, context, object
 ):
     """Create the geometry, UV maps, and vertex colours for the inset lines."""
-    if (config['debug'] == True):
+    if (config['verbose'] == True):
         print(__name__ + '.inset_lines')
 
     #   Load the object's mesh datablock into a bmesh and parse geometry from
@@ -492,7 +501,7 @@ def outline(
         config, context, object
 ):
     """Create the geometry, UV maps, and vertex colours for the outset line."""
-    if (config['debug'] == True):
+    if (config['verbose'] == True):
         print(__name__ + '.outline')
 
     #   Set mesh select mode to vertex
@@ -616,7 +625,7 @@ def surface(
         config, context, object
 ):
     """Create UV maps and vertex colours for the surface."""
-    if (config['debug'] == True):
+    if (config['verbose'] == True):
         print(__name__ + '.surface')
 
     #   Load the object's mesh datablock into a bmesh and parse geometry from
