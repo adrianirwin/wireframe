@@ -97,10 +97,16 @@ class WireframePanelDebugging(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
+        #   Creation Commands
+        column_cr = layout.column(align=False)
+        column_cr.label('Create:')
+        column_cr.operator('wireframe.generate_outline', icon='OBJECT_DATA')
+        column_cr.separator()
+
         #   Debugging Options
-        column_db = layout.column(align=False)
-        column_db.label("Dimensions:")
-        column_db.prop(
+        column_dm = layout.column(align=False)
+        column_dm.label("Dimensions:")
+        column_dm.prop(
             context.user_preferences.addons[__name__].preferences,
             "outline_inset"
         )
@@ -114,12 +120,8 @@ class WireframeGenerate(bpy.types.Operator):
     bl_idname = 'wireframe.generate'
     bl_label = 'Generate Wireframe'
     bl_description = 'Create wireframe metadata and geometry for a single mesh'
- 
-    def execute(self, context):
 
-        #
-        #   Configuration
-        #
+    def execute(self, context):
 
         config = {
             'debug': True,
@@ -140,13 +142,44 @@ class WireframeGenerate(bpy.types.Operator):
             create.surface(config, context, object)
 
             #   Create geometry for the inner portion of the wireframe lines
-            create.inset_lines(config, context, object)
+            create.lines(config, context, object)
 
             #   Create geometry for the outer portion of the wireframe lines
             create.outline(config, context, object)
 
             #   Export the selected object
-            export.object(config, context, object)
+            # export.object(config, context, object)
+
+        return {'FINISHED'}
+
+
+class WireframeGenerateOutline(bpy.types.Operator):
+    bl_idname = 'wireframe.generate_outline'
+    bl_label = 'Generate Wireframe Outline'
+    bl_description = 'Create wireframe outline geometry for a single mesh'
+
+    def execute(self, context):
+
+        config = {
+            'debug': True,
+            'verbose': True,
+            'export_path_root': context.user_preferences.addons[__name__].preferences.export_path_root,
+            'export_infix_object': context.user_preferences.addons[__name__].preferences.export_infix_object,
+            'export_infix_shell': context.user_preferences.addons[__name__].preferences.export_infix_shell,
+            'outline_inset': context.user_preferences.addons[__name__].preferences.outline_inset,
+        }
+
+        object = context.active_object
+        if object.type == 'MESH':
+
+            #   Set up metadata
+            create.metadata(config, object, reset=True)
+
+            #   Create (modify, really) geometry for the surface
+            create.surface(config, context, object)
+
+            #   Create geometry for the outer portion of the wireframe lines
+            create.outline(config, context, object)
 
         return {'FINISHED'}
 
@@ -176,6 +209,7 @@ def register():
     bpy.utils.register_class(WireframePanelCommands)
     bpy.utils.register_class(WireframePanelDebugging)
     bpy.utils.register_class(WireframeGenerate)
+    bpy.utils.register_class(WireframeGenerateOutline)
 
 
 def unregister():
@@ -183,6 +217,7 @@ def unregister():
     bpy.utils.unregister_class(WireframePanelCommands)
     bpy.utils.unregister_class(WireframePanelDebugging)
     bpy.utils.unregister_class(WireframeGenerate)
+    bpy.utils.unregister_class(WireframeGenerateOutline)
 
 if __name__ == '__main__':
     register()
